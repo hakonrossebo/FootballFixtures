@@ -5,6 +5,7 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 
 
+//Testfix branch test
 class FootballTeamModel
 {
     hidden var notify;
@@ -21,15 +22,15 @@ class FootballTeamModel
 	hidden var teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
 	hidden var teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
 	hidden var teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
-	var dict = { 
-		"teamName" => "abc", 
+	var dict = {
+		"teamName" => "abc",
 		"lastModified" => Time.now().value(),
 		"teamInfo" => {},
 		"nextFixtures" => {},
 		"previousFixtures" => {}
 		 };
 	//hidden var progressBar;
-		
+
     function initialize(handler)
     {
         notify = handler;
@@ -45,7 +46,7 @@ class FootballTeamModel
             teamInfoReceived = true;
             teamInfo = storedTeamInfo["teamInfo"];
             onReceiveCheckComplete(true, "All");
-			return;            
+			return;
         }
         bUpdateSettings = true;
     	Sys.println("Using data from web");
@@ -59,7 +60,7 @@ class FootballTeamModel
 		    			  "X-Response-Control" => "minified" 	 }
 		};
     	Sys.println("Called for info through API" );
-    	
+
 		Comm.makeJsonRequest(teamInfoUrl, {}, options, method(:onReceiveTeamInfo));
 		Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
 		Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
@@ -83,7 +84,7 @@ class FootballTeamModel
 			return true;
 		}
 	}
-	
+
     function onReceiveTeamInfo(responseCode, data)
     {
         if( responseCode == 200 )
