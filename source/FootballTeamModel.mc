@@ -19,9 +19,9 @@ class FootballTeamModel
 	hidden var userPref_TeamID = 64;
 	hidden var CONST_FIXTURE_DAYS = 20;
 	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
-	hidden var teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
-	hidden var teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
-	hidden var teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
+	hidden var teamInfoUrl = "";
+	hidden var teamNextFixturesUrl = "";
+	hidden var teamPreviousFixturesUrl = "";
 	var dict = {
 		"teamName" => "abc",
 		"lastModified" => Time.now().value(),
@@ -31,12 +31,12 @@ class FootballTeamModel
 		 };
 	//hidden var progressBar;
 
-    function initialize(handler)
+    function initialize(handler, selectedTeamId)
     {
         notify = handler;
         var app = App.getApp();
         var storedTeamInfo = app.getProperty("TeamInfoJson");
-        if(null!=storedTeamInfo && settingsValid(storedTeamInfo))
+        if(null!=storedTeamInfo && settingsValid(storedTeamInfo) && selectedTeamId == 0)
         {
         	Sys.println("Using data from settings");
             teamNextFixturesReceived = true;
@@ -48,6 +48,15 @@ class FootballTeamModel
             onReceiveCheckComplete(true, "All");
 			return;
         }
+        if (selectedTeamId > 0)
+        {
+        	Sys.println("User selected new team: " + selectedTeamId);
+        	userPref_TeamID = selectedTeamId;
+        }
+		teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
+		teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
+		teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
+
         bUpdateSettings = true;
     	Sys.println("Using data from web");
         storedTeamInfo="empty";

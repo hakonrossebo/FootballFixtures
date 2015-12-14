@@ -21,7 +21,7 @@ class FootballTeamApp extends App.AppBase {
 	    else
 	    {
 	        mView = new FootballTeamView();
-	        mModel = new FootballTeamModel(mView.method(:onInfoReady));
+	        mModel = new FootballTeamModel(mView.method(:onInfoReady),0);
 	    }
     }
 
@@ -31,7 +31,7 @@ class FootballTeamApp extends App.AppBase {
 
     //! Return the initial view of your application here
     function getInitialView() {
-        return [ mView ];
+        return [ mView, new FootballTeamViewInputDelegate() ];
     }
 
 }

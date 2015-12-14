@@ -5,6 +5,29 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Time as Time;
 
+class FootballTeamViewInputDelegate extends Ui.InputDelegate
+{
+
+    function onKey(key) {
+    	Sys.println("key pressed :" +key.getKey() );
+        if(key.getKey() == Ui.KEY_ENTER) {
+        	Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
+        }
+    }
+
+}
+class MainMenuDelegate extends Ui.MenuInputDelegate {
+    function onMenuItem(item) {
+        if ( item == :item_select_team ) {
+        	Sys.println("m1");
+        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
+            // Do something here
+        } else if ( item == :item_details ) {
+            // Do something else here
+        	Sys.println("m2");
+        }
+    }
+}
 
 class FootballTeamView extends Ui.View {
     hidden var mFootballTeamInfo = "";
@@ -15,7 +38,7 @@ class FootballTeamView extends Ui.View {
     hidden var mNextMatches =  ["--", "--", "--" ];
     hidden var mNextMatchDuration = "--";
     hidden var mModel;
-    
+
     //! Load your resources here
     function onLayout(dc) {
         setLayout(Rez.Layouts.FootballTeam(dc));
@@ -23,12 +46,13 @@ class FootballTeamView extends Ui.View {
 
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {
+    	Sys.println("showing main view");
     }
 
     //! Update the view
     function onUpdate(dc) {
-    
-    
+
+
         var TeamName = View.findDrawableById("TeamName");
         TeamName.setText(mFootballTeamInfo);
 
@@ -37,7 +61,7 @@ class FootballTeamView extends Ui.View {
 
 		var txtNextMatchDuration = View.findDrawableById("txtNextMatchDuration");
         txtNextMatchDuration.setText(mNextMatchDuration);
-		
+
         var txtNextMatch1 = View.findDrawableById("txtNextMatch1");
         txtNextMatch1.setText(mNextMatches[0]);
         var txtNextMatch2 = View.findDrawableById("txtNextMatch2");
@@ -53,8 +77,8 @@ class FootballTeamView extends Ui.View {
 
     function onInfoReady(info)
     {
-         Sys.println("Inside infoready");       
-    
+         Sys.println("Inside infoready");
+
         if (info instanceof FootballTeamInfo)
         {
         	Sys.println("Inside infoready - instance ok");
@@ -75,9 +99,9 @@ class FootballTeamView extends Ui.View {
     {
         mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
         mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
-        
+
         mNextMatchDuration = getNextFixtureDuration(fixtures["fixtures"][0]);
-        
+
     }
     function setLastFixtureInfo(fixtures)
     {
@@ -96,8 +120,8 @@ class FootballTeamView extends Ui.View {
         }
         var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
         var formattedDate = getFormattedDate(fixtureDateMoment);
-        
-        
+
+
         var result = Lang.format(fixtureTemplate, [formattedDate, fixtureLocation, fixtureOpponent ]);
         return result;
     }
@@ -109,12 +133,12 @@ class FootballTeamView extends Ui.View {
 		var formattedDuration = format_duration(duration.value());
         return formattedDuration;
     }
-    
+
     function getLastFixture(fixture)
     {
     	//fixtureTemplateTest = "2-0 (H) Chelsea";
     	var fixtureTemplate = "$1$ $2$ $3$";
-        var fixtureResultTemplate = "$1$-$2$"; 
+        var fixtureResultTemplate = "$1$-$2$";
         var homeTeamResult = fixture["result"]["goalsHomeTeam"];
         var awayTeamResult = fixture["result"]["goalsAwayTeam"];
         var fixtureResult = Lang.format(fixtureResultTemplate, [homeTeamResult, awayTeamResult]);
@@ -129,12 +153,12 @@ class FootballTeamView extends Ui.View {
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);
         return result;
     }
-    
+
     function parseISO8601DateToMoment(dateStr)
     {
     	// example - 2015-12-28T17:30:00Z
 		try
-		{	
+		{
 			var year = dateStr.substring(0, 4).toNumber();
 			var month = dateStr.substring(5, 7).toNumber();
 			var day = dateStr.substring(8, 10).toNumber();
@@ -146,14 +170,14 @@ class FootballTeamView extends Ui.View {
 		catch (ex)
 		{
 			return 0;
-		}    
+		}
     }
     function getFormattedDate(dateTime)
     {
     	var shortDate = Time.Gregorian.info(dateTime, Toybox.Time.FORMAT_SHORT);
     	return Lang.format("$1$/$2$ $3$:$4$", [shortDate.day, shortDate.month, shortDate.hour.format("%02d"), shortDate.min.format("%02d")]);
     }
-    
+
 	function format_duration(seconds) {
 		var days = seconds / 86400;
 		days = days.toLong();
@@ -163,6 +187,6 @@ class FootballTeamView extends Ui.View {
 		seconds -= hours * 3600;
 		var minutes = seconds / 60;
 		minutes = minutes.toLong() % 60;
-	    return Lang.format("in $1$d$2$h$3$min", [days, hours.format("%02d"), minutes.format("%02d")]);    
-	}    
+	    return Lang.format("in $1$d$2$h$3$min", [days, hours.format("%02d"), minutes.format("%02d")]);
+	}
 }
