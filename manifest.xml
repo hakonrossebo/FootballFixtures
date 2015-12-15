@@ -2,8 +2,14 @@
     <iq:application entry="FootballTeamApp" id="EB15B292CB374CAEA5E0C9892185FD58" launcherIcon="@Drawables.LauncherIcon" name="@Strings.AppName" type="widget">
 
         <iq:products>
+            <iq:product id="fr630"/>
             <iq:product id="fr235"/>
+            <iq:product id="fr230"/>
+            <iq:product id="vivoactive"/>
+            <iq:product id="fenix3"/>
+            <iq:product id="d2bravo"/>
             <iq:product id="fr920xt"/>
+            <iq:product id="epix"/>
         </iq:products>
 
         <iq:permissions>

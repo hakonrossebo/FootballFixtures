@@ -3,7 +3,7 @@
     <label id="lblLastMatch" x="8" y="50" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="@Strings.MainLastMatch"/>
     <label id="txtLastMatch" x="14" y="72" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
     <label id="lblNextMatches" x="8" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="@Strings.MainNextMatches"/>
-    <label id="txtNextMatchDuration" x="120" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_YELLOW" text="0:00"/>
+    <label id="txtNextMatchDuration" x="125" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_YELLOW" text="0:00"/>
     <label id="txtNextMatch1" x="14" y="112" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
     <label id="txtNextMatch2" x="14" y="130" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
    
