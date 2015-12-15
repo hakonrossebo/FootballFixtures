@@ -46,7 +46,7 @@ class FootballTeamModel
 	            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
 	            teamInfoReceived = true;
 	            teamInfo = storedTeamInfo["teamInfo"];
-	            onReceiveCheckComplete(true, "All");
+	            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainAll));
 				return;
 			}
 			else
@@ -113,7 +113,7 @@ class FootballTeamModel
         else
         {
             Sys.println("Received team info failed");
-            onReceiveCheckComplete(false, "TeamInfo");
+            onReceiveCheckComplete(false, Ui.loadResource(Rez.Strings.MainTeamInfo));
         }
     }
 
@@ -129,7 +129,7 @@ class FootballTeamModel
         else
         {
             Sys.println("Received team fixtures info failed");
-            onReceiveCheckComplete(false, "NextFixtures");
+            onReceiveCheckComplete(false, Ui.loadResource(Rez.Strings.MainNextFixtures));
         }
     }
     function onReceivePreviousFixtures(responseCode, data)
@@ -144,7 +144,7 @@ class FootballTeamModel
         else
         {
             Sys.println("Received team Previous fixtures info failed");
-            onReceiveCheckComplete(false, "PreviousFixtures");
+            onReceiveCheckComplete(false, Ui.loadResource(Rez.Strings.MainPreviousFixtures));
         }
     }
 
@@ -183,7 +183,7 @@ class FootballTeamModel
     	else
     	{
 	        //progressBar.setDisplayString( receiveType + " done" );
-            notify.invoke("Finished " + receiveType);
+            notify.invoke(Ui.loadResource(Rez.Strings.MainFinished) + " " + receiveType);
     	}
 	}
 }

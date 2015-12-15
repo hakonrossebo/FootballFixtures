@@ -187,6 +187,6 @@ class FootballTeamView extends Ui.View {
 		seconds -= hours * 3600;
 		var minutes = seconds / 60;
 		minutes = minutes.toLong() % 60;
-	    return Lang.format("in $1$d$2$h$3$min", [days, hours.format("%02d"), minutes.format("%02d")]);
+	    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
 	}
 }
