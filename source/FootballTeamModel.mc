@@ -19,11 +19,10 @@ class FootballTeamModel
 	hidden var userPref_TeamID = 64;
 	hidden var CONST_FIXTURE_DAYS = 20;
 	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
-	hidden var teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
-	hidden var teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
-	hidden var teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
+	hidden var teamInfoUrl = "";
+	hidden var teamNextFixturesUrl = "";
+	hidden var teamPreviousFixturesUrl = "";
 	var dict = {
-		"teamName" => "abc",
 		"lastModified" => Time.now().value(),
 		"teamInfo" => {},
 		"nextFixtures" => {},
@@ -31,23 +30,40 @@ class FootballTeamModel
 		 };
 	//hidden var progressBar;
 
-    function initialize(handler)
+    function initialize(handler, selectedTeamId)
     {
         notify = handler;
         var app = App.getApp();
         var storedTeamInfo = app.getProperty("TeamInfoJson");
-        if(null!=storedTeamInfo && settingsValid(storedTeamInfo))
+        if(null!=storedTeamInfo && selectedTeamId == 0)
         {
-        	Sys.println("Using data from settings");
-            teamNextFixturesReceived = true;
-            teamNextFixtures = storedTeamInfo["nextFixtures"];
-            teamPreviousFixturesReceived = true;
-            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
-            teamInfoReceived = true;
-            teamInfo = storedTeamInfo["teamInfo"];
-            onReceiveCheckComplete(true, "All");
-			return;
+			if (settingsValid(storedTeamInfo))
+			{
+	        	Sys.println("Using data from settings");
+	            teamNextFixturesReceived = true;
+	            teamNextFixtures = storedTeamInfo["nextFixtures"];
+	            teamPreviousFixturesReceived = true;
+	            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
+	            teamInfoReceived = true;
+	            teamInfo = storedTeamInfo["teamInfo"];
+	            onReceiveCheckComplete(true, "All");
+				return;
+			}
+			else
+			{
+				Sys.println("Using only id from settings");
+				userPref_TeamID = storedTeamInfo["teamInfo"]["id"];
+			}
         }
+        if (selectedTeamId > 0)
+        {
+        	Sys.println("User selected new team: " + selectedTeamId);
+        	userPref_TeamID = selectedTeamId;
+        }
+		teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
+		teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
+		teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
+
         bUpdateSettings = true;
     	Sys.println("Using data from web");
         storedTeamInfo="empty";
@@ -144,7 +160,7 @@ class FootballTeamModel
     	{
     		Sys.println("Receive complete check - ok");
             var info = new FootballTeamInfo();
-            info.teamId = userPref_TeamID;
+            //info.teamId = userPref_TeamID;
             info.name = teamInfo["shortName"];
             info.teamInfo = teamInfo;
             info.nextFixtures = teamNextFixtures;
