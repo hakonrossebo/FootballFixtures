@@ -1,5 +1,8 @@
 <strings>
     <string id="AppName">FootballFixtures</string>
+    <string id="MainLoading">Loading..</string> 
+    <string id="MainFixtureAway">(A)</string>       
+    <string id="MainFixtureHome">(H)</string>    
     <string id="MainLastMatch">Last match</string>
     <string id="MainNextMatches">Next matches</string>
     <string id="MainTeamInfo">Team info</string>

@@ -81,7 +81,7 @@ class FootballTeamModel
 		Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
 		Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
 
-        notify.invoke("Loading\nInfo");
+        notify.invoke(Ui.loadResource(Rez.Strings.MainLoading));
         //progressBar.setDisplayString( "Loading" );
     }
 

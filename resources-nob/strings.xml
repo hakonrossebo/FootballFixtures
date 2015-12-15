@@ -1,5 +1,8 @@
 <strings>
     <string id="AppName">FootballFixtures</string>
+    <string id="MainLoading">Henter..</string>
+    <string id="MainFixtureAway">(B)</string>    
+    <string id="MainFixtureHome">(H)</string>    
     <string id="MainLastMatch">Siste kamp</string>
     <string id="MainNextMatches">Neste kamper</string>
     <string id="MainTeamInfo">Lag info</string>
