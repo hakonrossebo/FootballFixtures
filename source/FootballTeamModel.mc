@@ -23,7 +23,6 @@ class FootballTeamModel
 	hidden var teamNextFixturesUrl = "";
 	hidden var teamPreviousFixturesUrl = "";
 	var dict = {
-		"teamName" => "abc",
 		"lastModified" => Time.now().value(),
 		"teamInfo" => {},
 		"nextFixtures" => {},
@@ -36,17 +35,25 @@ class FootballTeamModel
         notify = handler;
         var app = App.getApp();
         var storedTeamInfo = app.getProperty("TeamInfoJson");
-        if(null!=storedTeamInfo && settingsValid(storedTeamInfo) && selectedTeamId == 0)
+        if(null!=storedTeamInfo && selectedTeamId == 0)
         {
-        	Sys.println("Using data from settings");
-            teamNextFixturesReceived = true;
-            teamNextFixtures = storedTeamInfo["nextFixtures"];
-            teamPreviousFixturesReceived = true;
-            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
-            teamInfoReceived = true;
-            teamInfo = storedTeamInfo["teamInfo"];
-            onReceiveCheckComplete(true, "All");
-			return;
+			if (settingsValid(storedTeamInfo))
+			{
+	        	Sys.println("Using data from settings");
+	            teamNextFixturesReceived = true;
+	            teamNextFixtures = storedTeamInfo["nextFixtures"];
+	            teamPreviousFixturesReceived = true;
+	            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
+	            teamInfoReceived = true;
+	            teamInfo = storedTeamInfo["teamInfo"];
+	            onReceiveCheckComplete(true, "All");
+				return;
+			}
+			else
+			{
+				Sys.println("Using only id from settings");
+				userPref_TeamID = storedTeamInfo["teamInfo"]["id"];
+			}
         }
         if (selectedTeamId > 0)
         {
@@ -153,7 +160,7 @@ class FootballTeamModel
     	{
     		Sys.println("Receive complete check - ok");
             var info = new FootballTeamInfo();
-            info.teamId = userPref_TeamID;
+            //info.teamId = userPref_TeamID;
             info.name = teamInfo["shortName"];
             info.teamInfo = teamInfo;
             info.nextFixtures = teamNextFixtures;

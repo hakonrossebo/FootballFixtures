@@ -24,14 +24,16 @@ class PickerChooserDelegate extends Ui.PickerDelegate {
 
     function onAccept(values) {
    		Sys.println("selected: " + values[0] );
-//        Ui.popView(Ui.SLIDE_IMMEDIATE);
-//        Ui.popView(Ui.SLIDE_IMMEDIATE);
         
-	        var mView = new FootballTeamView();
-	        var mModel = new FootballTeamModel(mView.method(:onInfoReady),values[0]);
-	        Ui.pushView(mView, new FootballTeamViewInputDelegate(), Ui.SLIDE_IMMEDIATE);
-//        if(values[0] == Rez.Strings.pickerChooserColor) {
-//            Ui.pushView(new ColorPicker(), new ColorPickerDelegate(), Ui.SLIDE_IMMEDIATE);
-//        }
+        //var mView = new FootballTeamView();
+        var mModel = new FootballTeamModel(mainView.method(:onInfoReady),values[0]);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
+
+
+//			Ui.switchToView(mainView, new FootballTeamViewInputDelegate(), Ui.SLIDE_IMMEDIATE);
+//        	if(values[0] == Rez.Strings.pickerChooserColor) {
+//            	Ui.pushView(new ColorPicker(), new ColorPickerDelegate(), Ui.SLIDE_IMMEDIATE);
+//        	}
     }
 }

@@ -84,7 +84,7 @@ class FootballTeamView extends Ui.View {
         	Sys.println("Inside infoready - instance ok");
             mFootballTeamInfo = info.teamInfo["shortName"];
             Sys.println("team: " + info.teamInfo["shortName"]);
-            mTeamId = info.teamId;
+            mTeamId = info.teamInfo["id"];
             setLastFixtureInfo(info.previousFixtures);
 			setFixtureInfo(info.nextFixtures);
         }

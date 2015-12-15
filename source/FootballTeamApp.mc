@@ -1,11 +1,14 @@
 using Toybox.Application as App;
 using Toybox.System as Sys;
 
+
+var mainView;
+
 class FootballTeamApp extends App.AppBase {
 
 
     hidden var mModel;
-    hidden var mView;
+    
 
     function initialize() {
         AppBase.initialize();
@@ -20,8 +23,8 @@ class FootballTeamApp extends App.AppBase {
 	    }
 	    else
 	    {
-	        mView = new FootballTeamView();
-	        mModel = new FootballTeamModel(mView.method(:onInfoReady),0);
+	        mainView = new FootballTeamView();
+	        mModel = new FootballTeamModel(mainView.method(:onInfoReady),0);
 	    }
     }
 
@@ -31,7 +34,7 @@ class FootballTeamApp extends App.AppBase {
 
     //! Return the initial view of your application here
     function getInitialView() {
-        return [ mView, new FootballTeamViewInputDelegate() ];
+        return [ mainView, new FootballTeamViewInputDelegate() ];
     }
 
 }
