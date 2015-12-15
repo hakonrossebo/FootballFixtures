@@ -111,12 +111,12 @@ class FootballTeamView extends Ui.View {
     function getFixture(fixture)
     {
     	var fixtureTemplate = "$1$ $2$ $3$";
-        var fixtureLocation = "(A)";
+        var fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureAway);
         var fixtureOpponent = fixture["homeTeamName"];
         if (fixture["homeTeamId"] == mTeamId)
         {
         	fixtureOpponent = fixture["awayTeamName"];
-        	fixtureLocation = "(H)";
+        	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
         var formattedDate = getFormattedDate(fixtureDateMoment);
@@ -143,12 +143,12 @@ class FootballTeamView extends Ui.View {
         var awayTeamResult = fixture["result"]["goalsAwayTeam"];
         var fixtureResult = Lang.format(fixtureResultTemplate, [homeTeamResult, awayTeamResult]);
 
-        var fixtureLocation = "(A)";
+        var fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureAway);
         var fixtureOpponent = fixture["homeTeamName"];
         if (fixture["homeTeamId"] == mTeamId)
         {
         	fixtureOpponent = fixture["awayTeamName"];
-        	fixtureLocation = "(H)";
+        	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);
         return result;
@@ -187,6 +187,6 @@ class FootballTeamView extends Ui.View {
 		seconds -= hours * 3600;
 		var minutes = seconds / 60;
 		minutes = minutes.toLong() % 60;
-	    return Lang.format("in $1$d$2$h$3$min", [days, hours.format("%02d"), minutes.format("%02d")]);
+	    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
 	}
 }

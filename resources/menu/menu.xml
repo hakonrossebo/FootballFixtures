@@ -1,4 +1,4 @@
 <menu id="MainMenu">
-    <menu-item id="item_select_team">Select team</menu-item>
-    <menu-item id="item_details">Details</menu-item>
+    <menu-item id="item_select_team">@Strings.MainMenuSelectTeam</menu-item>
+    <menu-item id="item_details">@Strings.MainMenuDetails</menu-item>
 </menu>

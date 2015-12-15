@@ -1,0 +1,16 @@
+<strings>
+    <string id="AppName">FootballFixtures</string>
+    <string id="MainLoading">Henter..</string>
+    <string id="MainFixtureAway">(B)</string>    
+    <string id="MainFixtureHome">(H)</string>    
+    <string id="MainLastMatch">Siste kamp</string>
+    <string id="MainNextMatches">Neste kamper</string>
+    <string id="MainTeamInfo">Lag info</string>
+    <string id="MainNextFixtures">Neste kamper</string>
+    <string id="MainPreviousFixtures">Siste kamper</string>
+    <string id="MainFinished">Ferdig</string>
+    <string id="MainAll">Ferdig</string>
+    <string id="MainMatchIn">om </string>
+    <string id="MainMenuSelectTeam">Velg lag</string>
+    <string id="MainMenuDetails">Detaljer</string>
+</strings>
