@@ -14,6 +14,11 @@ By pressing the menu button, the user can select their favorite team. This initi
 - Support menu selection of league -> teams -> team
 - Support more languages
 
+The app is available here:
+https://apps.garmin.com/en-US/apps/0835175d-0468-4c4b-a49b-8e2165f57677
+
+Feature requests and bugs discussed here:
+https://forums.garmin.com/showthread.php?337791-Widget-Football-Fixtures
 
 Please feel free to contribute
 
