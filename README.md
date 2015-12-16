@@ -1,7 +1,7 @@
 # FootballFixtures
 Garmin Connect IQ widget to display football (soccer) team fixtures
 
-### Description:
+##### Description:
 
 This widget show you the last and next fixtures for your football team. 
 - The opponent and results for the last fixture. 
@@ -10,7 +10,7 @@ This widget show you the last and next fixtures for your football team.
 
 By pressing the menu button, the user can select their favorite team. This initial version only supports Premier League teams.
 
-### Roadmap
+##### Roadmap
 - Support menu selection of league -> teams -> team
 - Support more languages
 
