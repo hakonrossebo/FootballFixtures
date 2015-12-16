@@ -11,7 +11,8 @@ class FootballTeamViewInputDelegate extends Ui.InputDelegate
     function onKey(key) {
     	Sys.println("key pressed :" +key.getKey() );
         if(key.getKey() == Ui.KEY_ENTER) {
-        	Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
+        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
+        	//Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
         }
     }
 
@@ -22,9 +23,6 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
         	Sys.println("m1");
         	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
             // Do something here
-        } else if ( item == :item_details ) {
-            // Do something else here
-        	Sys.println("m2");
         }
     }
 }
@@ -77,14 +75,13 @@ class FootballTeamView extends Ui.View {
 
     function onInfoReady(info)
     {
-         Sys.println("Inside infoready");
-
+        Sys.println("Inside infoready");
         if (info instanceof FootballTeamInfo)
         {
         	Sys.println("Inside infoready - instance ok");
-            mFootballTeamInfo = info.teamInfo["shortName"];
-            Sys.println("team: " + info.teamInfo["shortName"]);
-            mTeamId = info.teamInfo["id"];
+            mFootballTeamInfo = info.name;
+            Sys.println("team: " + info.name);
+            mTeamId = info.teamId;
             setLastFixtureInfo(info.previousFixtures);
 			setFixtureInfo(info.nextFixtures);
         }
