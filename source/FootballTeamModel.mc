@@ -10,8 +10,6 @@ class FootballTeamModel
 {
     hidden var notify;
     hidden var bUpdateSettings = false;
-	hidden var teamInfo;
-	hidden var teamInfoReceived = false;
 	hidden var teamNextFixtures;
 	hidden var teamNextFixturesReceived = false;
 	hidden var teamPreviousFixtures;
@@ -24,7 +22,7 @@ class FootballTeamModel
 	hidden var teamPreviousFixturesUrl = "";
 	var dict = {
 		"lastModified" => Time.now().value(),
-		"teamInfo" => {},
+		"teamId" => 0,
 		"nextFixtures" => {},
 		"previousFixtures" => {}
 		 };
@@ -34,7 +32,7 @@ class FootballTeamModel
     {
         notify = handler;
         var app = App.getApp();
-        var storedTeamInfo = app.getProperty("TeamInfoJson");
+        var storedTeamInfo = app.getProperty("TeamFixtureInfoJson");
         if(null!=storedTeamInfo && selectedTeamId == 0)
         {
 			if (settingsValid(storedTeamInfo))
@@ -44,15 +42,14 @@ class FootballTeamModel
 	            teamNextFixtures = storedTeamInfo["nextFixtures"];
 	            teamPreviousFixturesReceived = true;
 	            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
-	            teamInfoReceived = true;
-	            teamInfo = storedTeamInfo["teamInfo"];
+	            userPref_TeamID = storedTeamInfo["teamId"];
 	            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainAll));
 				return;
 			}
 			else
 			{
 				Sys.println("Using only id from settings");
-				userPref_TeamID = storedTeamInfo["teamInfo"]["id"];
+				userPref_TeamID = storedTeamInfo["teamId"];
 			}
         }
         if (selectedTeamId > 0)
@@ -60,7 +57,6 @@ class FootballTeamModel
         	Sys.println("User selected new team: " + selectedTeamId);
         	userPref_TeamID = selectedTeamId;
         }
-		teamInfoUrl = Lang.format("http://api.football-data.org/v1/teams/$1$", [userPref_TeamID]);
 		teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
 		teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
 
@@ -77,7 +73,6 @@ class FootballTeamModel
 		};
     	Sys.println("Called for info through API" );
 
-		Comm.makeJsonRequest(teamInfoUrl, {}, options, method(:onReceiveTeamInfo));
 		Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
 		Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
 
@@ -91,7 +86,7 @@ class FootballTeamModel
 		var timeNow = Time.now();
         var duration = timeNow.subtract(lastUpdated);
 		Sys.println("Duration since last settings (s) " + duration.value());
-		if (duration.value() > 60*60)
+		if (duration.value() > 60*60*6)
 		{
 			return false;
 		}
@@ -100,22 +95,6 @@ class FootballTeamModel
 			return true;
 		}
 	}
-
-    function onReceiveTeamInfo(responseCode, data)
-    {
-        if( responseCode == 200 )
-        {
-            Sys.println("Received team info ok");
-            teamInfoReceived = true;
-            teamInfo = data;
-            onReceiveCheckComplete(true, "TeamInfo");
-        }
-        else
-        {
-            Sys.println("Received team info failed");
-            onReceiveCheckComplete(false, Ui.loadResource(Rez.Strings.MainTeamInfo));
-        }
-    }
 
     function onReceiveNextFixtures(responseCode, data)
     {
@@ -156,13 +135,12 @@ class FootballTeamModel
     		notify.invoke( "Failed to load\nError: " + responseCode.toString() );
     		return;
     	}
-    	if (teamInfoReceived && teamNextFixturesReceived && teamPreviousFixturesReceived)
+    	if (teamNextFixturesReceived && teamPreviousFixturesReceived)
     	{
     		Sys.println("Receive complete check - ok");
             var info = new FootballTeamInfo();
-            //info.teamId = userPref_TeamID;
-            info.name = teamInfo["shortName"];
-            info.teamInfo = teamInfo;
+            info.teamId = userPref_TeamID;
+            info.name = globalTeams[userPref_TeamID];
             info.nextFixtures = teamNextFixtures;
             info.previousFixtures = teamPreviousFixtures;
             Sys.println(info.name);
@@ -174,9 +152,9 @@ class FootballTeamModel
 		        var app = App.getApp();
 		        dict["nextFixtures"] = info.nextFixtures;
 		        dict["previousFixtures"] = info.previousFixtures;
-		        dict["teamInfo"] = info.teamInfo;
+		        dict["teamId"] = info.teamId;
 		        dict["lastModified"] = Time.now().value();
-		        var storedTeamInfo = app.setProperty("TeamInfoJson", dict);
+		        var storedTeamInfo = app.setProperty("TeamFixtureInfoJson", dict);
 				app.saveProperties();
 			}
     	}
