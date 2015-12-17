@@ -22,3 +22,6 @@ https://forums.garmin.com/showthread.php?337791-Widget-Football-Fixtures
 
 Please feel free to contribute
 
+Collaboration - Important
+To be able to run this app, you need to supply an API token. See wiki for details.
+
