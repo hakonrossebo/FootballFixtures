@@ -10,7 +10,7 @@ class FootballTeamViewInputDelegate extends Ui.InputDelegate
 
     function onKey(key) {
     	Sys.println("key pressed :" +key.getKey() );
-        if(key.getKey() == Ui.KEY_ENTER) {
+        if(key.getKey() == Ui.KEY_ENTER || key.getKey() == Ui.KEY_MENU) {
         	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
         	//Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
         }
@@ -76,28 +76,45 @@ class FootballTeamView extends Ui.View {
     function onInfoReady(info)
     {
         Sys.println("Inside infoready");
-        if (info instanceof FootballTeamInfo)
-        {
-        	Sys.println("Inside infoready - instance ok");
-            mFootballTeamInfo = info.name;
-            Sys.println("team: " + info.name);
-            mTeamId = info.teamId;
-            setLastFixtureInfo(info.previousFixtures);
-			setFixtureInfo(info.nextFixtures);
-        }
-        else if (info instanceof Lang.String)
-        {
-            mFootballTeamInfo = info;
-        }
-        //Sys.println(mFootballTeamInfo);
+		try
+		{
+	        if (info instanceof FootballTeamInfo)
+	        {
+	        	Sys.println("Inside infoready - instance ok");
+	            mFootballTeamInfo = info.name;
+	            Sys.println("team: " + info.name);
+	            mTeamId = info.teamId;
+	            setLastFixtureInfo(info.previousFixtures);
+				setFixtureInfo(info.nextFixtures);
+				Sys.println("Used memory:");
+				info = null;
+				Sys.println(Sys.getSystemStats().usedMemory);
+	        }
+	        else if (info instanceof Lang.String)
+	        {
+	            mFootballTeamInfo = info;
+	        }
+		}
+		catch (ex)
+		{
+			mFootballTeamInfo = "Error";
+			Sys.println("Error");
+		}
         Ui.requestUpdate();
     }
     function setFixtureInfo(fixtures)
     {
-        mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
-        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
-
-        mNextMatchDuration = getNextFixtureDuration(fixtures["fixtures"][0]);
+		try
+		{
+	        mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
+	        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
+	        mNextMatchDuration = getNextFixtureDuration(fixtures["fixtures"][0]);
+		}
+		catch (ex)
+		{
+			mFootballTeamInfo = "Error";
+			Sys.println("Error in setFixtureInfo");
+		}
 
     }
     function setLastFixtureInfo(fixtures)
@@ -165,8 +182,9 @@ class FootballTeamView extends Ui.View {
 			return dateTime;
 		}
 		catch (ex)
-		{
-			return 0;
+		{	
+			Sys.println("Error - defaulting time to now");
+			return Time.now();
 		}
     }
     function getFormattedDate(dateTime)
@@ -176,14 +194,23 @@ class FootballTeamView extends Ui.View {
     }
 
 	function format_duration(seconds) {
-		var days = seconds / 86400;
-		days = days.toLong();
-		seconds -= days * 86400;
-		var hours = seconds / 3600;
-		hours = hours.toLong() % 24;
-		seconds -= hours * 3600;
-		var minutes = seconds / 60;
-		minutes = minutes.toLong() % 60;
-	    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
+		try
+		{
+			var days = seconds / 86400;
+			days = days.toLong();
+			seconds -= days * 86400;
+			var hours = seconds / 3600;
+			hours = hours.toLong() % 24;
+			seconds -= hours * 3600;
+			var minutes = seconds / 60;
+			minutes = minutes.toLong() % 60;
+		    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
+		}
+		catch (ex)
+		{
+			Sys.println("Error in date formatting");
+			return "0:0:0";
+		}
+	
 	}
 }
