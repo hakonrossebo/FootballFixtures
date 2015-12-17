@@ -1,10 +1,10 @@
 <layout id="FootballTeam">
     <label id="TeamName" x="100" y="15" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_BLUE" />
-    <label id="lblLastMatch" x="8" y="50" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="Last match"/>
-    <label id="txtLastMatch" x="14" y="72" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text="6/12/15 - 2-0 (H) - Newcastle United FC"/>
-    <label id="lblNextMatches" x="8" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="Next matches"/>
-    <label id="txtNextMatchDuration" x="120" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_YELLOW" text="0:00"/>
-    <label id="txtNextMatch1" x="14" y="112" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text="13/12/15 16:00 UTC - (H) West Bromwich Albion FC"/>
-    <label id="txtNextMatch2" x="14" y="130" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text="20/12/15 16:00 UTC - (A) Watford FC"/>
+    <label id="lblLastMatch" x="8" y="50" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="@Strings.MainLastMatch"/>
+    <label id="txtLastMatch" x="14" y="72" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
+    <label id="lblNextMatches" x="8" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_BLUE" text="@Strings.MainNextMatches"/>
+    <label id="txtNextMatchDuration" x="125" y="90" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_YELLOW" text="0:00"/>
+    <label id="txtNextMatch1" x="14" y="112" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
+    <label id="txtNextMatch2" x="14" y="130" font="Gfx.FONT_SMALL" justification="Gfx.TEXT_JUSTIFY_LEFT" color="Gfx.COLOR_WHITE" text=""/>
    
 </layout>

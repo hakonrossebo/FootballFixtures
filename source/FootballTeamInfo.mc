@@ -4,7 +4,6 @@ class FootballTeamInfo
 	var dateFetched;
     var teamId;
     var name;
-    var teamInfo;
     var nextFixtures;
     var previousFixtures;
 }
