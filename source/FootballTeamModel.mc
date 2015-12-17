@@ -31,53 +31,62 @@ class FootballTeamModel
     function initialize(handler, selectedTeamId)
     {
         notify = handler;
-        var app = App.getApp();
-        var storedTeamInfo = app.getProperty("TeamFixtureInfoJson");
-        if(null!=storedTeamInfo && selectedTeamId == 0)
-        {
-			if (settingsValid(storedTeamInfo))
-			{
-	        	Sys.println("Using data from settings");
-	            teamNextFixturesReceived = true;
-	            teamNextFixtures = storedTeamInfo["nextFixtures"];
-	            teamPreviousFixturesReceived = true;
-	            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
-	            userPref_TeamID = storedTeamInfo["teamId"];
-	            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainAll));
-				return;
-			}
-			else
-			{
-				Sys.println("Using only id from settings");
-				userPref_TeamID = storedTeamInfo["teamId"];
-			}
-        }
-        if (selectedTeamId > 0)
-        {
-        	Sys.println("User selected new team: " + selectedTeamId);
-        	userPref_TeamID = selectedTeamId;
-        }
-		teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
-		teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
-
-        bUpdateSettings = true;
-    	Sys.println("Using data from web");
-        storedTeamInfo="empty";
-        //progressBar = new Ui.ProgressBar( "Processing", null );
-        //Ui.pushView( progressBar, null, Ui.SLIDE_DOWN );
-		var token = Ui.loadResource (Rez.Strings.API_Token);
-		var options = {
-		    :method => Comm.HTTP_REQUEST_METHOD_GET,
-		    :headers => { "X-Auth-Token" => token,
-		    			  "X-Response-Control" => "minified" 	 }
-		};
-    	Sys.println("Called for info through API" );
-
-		Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
-		Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
-
-        notify.invoke(Ui.loadResource(Rez.Strings.MainLoading));
-        //progressBar.setDisplayString( "Loading" );
+		try
+		{
+	        var app = App.getApp();
+	        var storedTeamInfo = app.getProperty("TeamFixtureInfoJson");
+	        if(null!=storedTeamInfo && selectedTeamId == 0)
+	        {
+				if (settingsValid(storedTeamInfo))
+				{
+		        	Sys.println("Using data from settings");
+		            teamNextFixturesReceived = true;
+		            teamNextFixtures = storedTeamInfo["nextFixtures"];
+		            teamPreviousFixturesReceived = true;
+		            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
+		            userPref_TeamID = storedTeamInfo["teamId"];
+		            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainAll));
+					return;
+				}
+				else
+				{
+					Sys.println("Using only id from settings");
+					userPref_TeamID = storedTeamInfo["teamId"];
+				}
+	        }
+	        if (selectedTeamId > 0)
+	        {
+	        	Sys.println("User selected new team: " + selectedTeamId);
+	        	userPref_TeamID = selectedTeamId;
+	        }
+			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
+			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
+	
+	        bUpdateSettings = true;
+	    	Sys.println("Using data from web");
+	        storedTeamInfo="empty";
+	        //progressBar = new Ui.ProgressBar( "Processing", null );
+	        //Ui.pushView( progressBar, null, Ui.SLIDE_DOWN );
+			var token = Ui.loadResource (Rez.Strings.API_Token);
+			var options = {
+			    :method => Comm.HTTP_REQUEST_METHOD_GET,
+			    :headers => { "X-Auth-Token" => token,
+			    			  "X-Response-Control" => "minified" 	 }
+			};
+	    	Sys.println("Called for info through API" );
+	
+			Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
+			Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
+	
+	        notify.invoke(Ui.loadResource(Rez.Strings.MainLoading));
+	        //progressBar.setDisplayString( "Loading" );
+		}
+		catch (ex)
+		{
+	        notify.invoke("Error");
+			Sys.println("Error");
+		}
+        
     }
 
 	function settingsValid(storedTeamInfo)
