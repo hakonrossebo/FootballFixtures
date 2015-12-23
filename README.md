@@ -25,3 +25,5 @@ Please feel free to contribute
 Collaboration - Important
 To be able to run this app, you need to supply an API token. See wiki for details.
 
+##### Credits
+Uses data from http://api.football-data.org
