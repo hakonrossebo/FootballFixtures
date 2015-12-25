@@ -4,12 +4,18 @@ using Toybox.Graphics;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Time as Time;
+using Log4MonkeyC as Log;
 
 class FootballTeamViewInputDelegate extends Ui.InputDelegate
 {
+    hidden var logger;
+
+    function initialize(){
+      logger = Log.getLogger("FootballTeamModel");
+    }
 
     function onKey(key) {
-    	Sys.println("key pressed :" +key.getKey() );
+      logger.debug("key pressed :" +key.getKey() );
         if(key.getKey() == Ui.KEY_ENTER || key.getKey() == Ui.KEY_MENU) {
         	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
         	//Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
@@ -18,9 +24,15 @@ class FootballTeamViewInputDelegate extends Ui.InputDelegate
 
 }
 class MainMenuDelegate extends Ui.MenuInputDelegate {
+    hidden var logger;
+
+    function initialize(){
+      logger = Log.getLogger("FootballTeamModel");
+    }
+
     function onMenuItem(item) {
         if ( item == :item_select_team ) {
-        	Sys.println("m1");
+        	logger.debug("m1");
         	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
             // Do something here
         }
@@ -36,6 +48,11 @@ class FootballTeamView extends Ui.View {
     hidden var mNextMatches =  ["--", "--", "--" ];
     hidden var mNextMatchDuration = "--";
     hidden var mModel;
+    hidden var logger;
+
+    function initialize(){
+      logger = Log.getLogger("FootballTeamView");
+    }
 
     //! Load your resources here
     function onLayout(dc) {
@@ -44,7 +61,7 @@ class FootballTeamView extends Ui.View {
 
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {
-    	Sys.println("showing main view");
+    	logger.debug("showing main view");
     }
 
     //! Update the view
@@ -75,20 +92,20 @@ class FootballTeamView extends Ui.View {
 
     function onInfoReady(info)
     {
-        Sys.println("Inside infoready");
+        logger.debug("Inside infoready");
 		try
 		{
 	        if (info instanceof FootballTeamInfo)
 	        {
-	        	Sys.println("Inside infoready - instance ok");
+	        	  logger.debug("Inside infoready - instance ok");
 	            mFootballTeamInfo = info.name;
-	            Sys.println("team: " + info.name);
+	            logger.debug("team: " + info.name);
 	            mTeamId = info.teamId;
 	            setLastFixtureInfo(info.previousFixtures);
 				setFixtureInfo(info.nextFixtures);
-				Sys.println("Used memory:");
+				logger.debug("Used memory:");
 				info = null;
-				Sys.println(Sys.getSystemStats().usedMemory);
+				logger.debug(Sys.getSystemStats().usedMemory);
 	        }
 	        else if (info instanceof Lang.String)
 	        {
@@ -98,7 +115,7 @@ class FootballTeamView extends Ui.View {
 		catch (ex)
 		{
 			mFootballTeamInfo = "Error";
-			Sys.println("Error");
+			logger.error("Error");
 		}
         Ui.requestUpdate();
     }
@@ -113,7 +130,7 @@ class FootballTeamView extends Ui.View {
 		catch (ex)
 		{
 			mFootballTeamInfo = "Error";
-			Sys.println("Error in setFixtureInfo");
+			logger.error("Error in setFixtureInfo");
 		}
 
     }
@@ -143,7 +160,7 @@ class FootballTeamView extends Ui.View {
     {
         var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
         var duration = fixtureDateMoment.subtract(Time.now());
-	    Sys.println(duration.value());
+	       logger.debug(duration.value());
 		var formattedDuration = format_duration(duration.value());
         return formattedDuration;
     }
@@ -182,8 +199,8 @@ class FootballTeamView extends Ui.View {
 			return dateTime;
 		}
 		catch (ex)
-		{	
-			Sys.println("Error - defaulting time to now");
+		{
+			logger.error("Error - defaulting time to now");
 			return Time.now();
 		}
     }
@@ -208,9 +225,9 @@ class FootballTeamView extends Ui.View {
 		}
 		catch (ex)
 		{
-			Sys.println("Error in date formatting");
+			logger.error("Error in date formatting");
 			return "0:0:0";
 		}
-	
+
 	}
 }
