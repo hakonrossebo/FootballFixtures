@@ -61,6 +61,13 @@ class FootballTeamModel
 	        	logger.debug("User selected new team: " + selectedTeamId);
 	        	userPref_TeamID = selectedTeamId;
 	        }
+
+          var deviceSettings = Sys.getDeviceSettings();
+    	    if(deviceSettings.phoneConnected == false) {
+    	        var waitingView = new WaitingConnectionView();
+    	        Ui.switchToView(waitingView, null, Ui.SLIDE_RIGHT);
+    	    }
+
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
 
