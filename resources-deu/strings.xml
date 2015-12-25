@@ -1,0 +1,16 @@
+<strings>
+	<string id="AppName">Spiel Paarungen</string>
+	<string id="MainLoading">Laden ...</string>
+	<string id="MainFixtureAway">(A)</string>
+	<string id="MainFixtureHome">(H)</string>
+	<string id="MainLastMatch">Letztes Spiel</string>
+	<string id="MainNextMatches">Nächste Spiele</string>
+	<string id="MainTeamInfo">Team Info</string>
+	<string id="MainNextFixtures">Nächste Paarungen</string>
+	<string id="MainPreviousFixtures">Vorherige Paarungen</string>
+	<string id="MainFinished">Beendet</string>
+	<string id="MainAll">Beendet</string>
+	<string id="MainMatchIn">in </string>
+	<string id="MainMenuSelectTeam">Mannschaftsauswahl</string>
+	<string id="MainMenuDetails">Details</string>
+</strings>
