@@ -11,5 +11,6 @@
 	<string id="MainFinished">Beendet</string>
 	<string id="MainAll">Beendet</string>
 	<string id="MainMatchIn">in </string>
-	<string id="MainMenuSelectTeam">Mannschaftsauswahl</string> alternate: Team Auswahl
-<string id="MainMenuDetails">Details</string>
+	<string id="MainMenuSelectTeam">Mannschaftsauswahl</string>
+	<string id="MainMenuDetails">Details</string>
+</strings>
