@@ -12,6 +12,7 @@ class FootballTeamModel
     hidden var bUpdateSettings = false;
     hidden var logger;
   	hidden var teamNextFixtures;
+    hidden var propertyHandler;
   	hidden var teamNextFixturesReceived = false;
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
@@ -29,8 +30,9 @@ class FootballTeamModel
   		 };
   	//hidden var progressBar;
 
-    function initialize(handler, selectedTeamId)
+    function initialize(propertyHandler, handler, selectedTeamId)
     {
+        self.propertyHandler = propertyHandler;
         logger = Log.getLogger("FootballTeamModel");
         notify = handler;
 		try

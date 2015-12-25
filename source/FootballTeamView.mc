@@ -6,38 +6,7 @@ using Toybox.Application as App;
 using Toybox.Time as Time;
 using Log4MonkeyC as Log;
 
-class FootballTeamViewInputDelegate extends Ui.InputDelegate
-{
-    hidden var logger;
 
-    function initialize(){
-      logger = Log.getLogger("FootballTeamModel");
-    }
-
-    function onKey(key) {
-      logger.debug("key pressed :" +key.getKey() );
-        if(key.getKey() == Ui.KEY_ENTER || key.getKey() == Ui.KEY_MENU) {
-        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
-        	//Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
-        }
-    }
-
-}
-class MainMenuDelegate extends Ui.MenuInputDelegate {
-    hidden var logger;
-
-    function initialize(){
-      logger = Log.getLogger("FootballTeamModel");
-    }
-
-    function onMenuItem(item) {
-        if ( item == :item_select_team ) {
-        	logger.debug("m1");
-        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
-            // Do something here
-        }
-    }
-}
 
 class FootballTeamView extends Ui.View {
     hidden var mFootballTeamInfo = "";

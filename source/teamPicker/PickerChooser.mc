@@ -16,16 +16,3 @@ class PickerChooser extends Ui.Picker {
         Picker.onUpdate(dc);
     }
 }
-
-class PickerChooserDelegate extends Ui.PickerDelegate {
-    function onCancel() {
-        Ui.popView(Ui.SLIDE_IMMEDIATE);
-    }
-
-    function onAccept(values) {
-   		Sys.println("selected: " + values[0] );
-        
-        var mModel = new FootballTeamModel(mainView.method(:onInfoReady),values[0]);
-        Ui.popView(Ui.SLIDE_IMMEDIATE);
-    }
-}

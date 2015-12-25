@@ -12,7 +12,7 @@ class FootballTeamApp extends App.AppBase {
 
     hidden var mModel;
     hidden var logger;
-
+    hidden var propertyHandler;
     function initialize() {
         AppBase.initialize();
     }
@@ -25,8 +25,9 @@ class FootballTeamApp extends App.AppBase {
   		logger = Log.getLogger("FootballTeamApp");
 
       mainView = new FootballTeamView();
-      mModel = new FootballTeamModel(mainView.method(:onInfoReady),0);
-		    
+      propertyHandler = new PropertyHandler();
+      mModel = new FootballTeamModel(propertyHandler, mainView.method(:onInfoReady),0);
+
     }
 
     //! onStop() is called when your application is exiting
@@ -36,7 +37,7 @@ class FootballTeamApp extends App.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
     	logger.debug("Starting application");
-        return [ mainView, new FootballTeamViewInputDelegate() ];
+        return [ mainView, new FootballTeamViewInputDelegate(propertyHandler)];
     }
 
 }
