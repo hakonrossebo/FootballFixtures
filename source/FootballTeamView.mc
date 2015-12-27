@@ -65,6 +65,7 @@ class FootballTeamView extends Ui.View {
         logger.debug("Inside prepareViewInfo");
 		try
 		{
+	        //if (teamFixturesInfo instanceof Toybox.Lang.Dictionary)
 	        if (1==1)
 	        {
 	        	logger.debug("Inside infoready - instance ok");
@@ -81,6 +82,7 @@ class FootballTeamView extends Ui.View {
 	            mFootballTeamInfo = "View error";
 				logger.debug("View error. No dictionary with info from model.");
 	        }
+	        teamFixturesInfo = null;
 		}
 		catch (ex)
 		{

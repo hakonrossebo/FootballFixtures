@@ -20,6 +20,7 @@ class PickerChooserDelegate extends Ui.PickerDelegate {
    		logger.debug("selected: " + values[0] );
 		var infoView = new InfoView();
 		var mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),values[0]);
+		Ui.popView(Ui.SLIDE_IMMEDIATE);
 		Ui.switchToView(infoView, null, Ui.SLIDE_RIGHT);
 
     }

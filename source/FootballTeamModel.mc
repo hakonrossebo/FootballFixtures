@@ -10,8 +10,8 @@ class FootballTeamModel
 {
     hidden var callbackHandler;
     hidden var logger;
-  	hidden var teamNextFixtures;
     hidden var propertyHandler;
+  	hidden var teamNextFixtures;
   	hidden var teamNextFixturesReceived = false;
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
@@ -32,12 +32,14 @@ class FootballTeamModel
 			if (teamFixturesInfo["dateValid"] && teamFixturesInfo["selectedTeamValid"])
 			{
 				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
+				teamFixturesInfo = null;
 				return;
 			}
 			if (!teamFixturesInfo["selectedTeamValid"])
 			{
 				//User need to select a team
 				Ui.switchToView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
+				teamFixturesInfo = null;
 				return;
 			}
 
@@ -64,6 +66,8 @@ class FootballTeamModel
 			Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
 	    	logger.debug("Invoked json API requests" );
 	        callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainLoading));
+			teamFixturesInfo = null;
+	        
 		}
 		catch (ex)
 		{
@@ -116,8 +120,11 @@ class FootballTeamModel
     	{
     		logger.debug("Receive complete check - ok");
     		var teamFixturesInfo = propertyHandler.setTeamFixturesInfo(teamNextFixtures, teamPreviousFixtures, userTeamId);
+    		teamNextFixtures = null;
+    		teamPreviousFixtures = null;
             callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
 			Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
+			teamFixturesInfo = null;
     	}
     	else
     	{
