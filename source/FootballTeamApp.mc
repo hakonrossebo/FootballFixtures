@@ -3,13 +3,12 @@ using Toybox.System as Sys;
 using Log4MonkeyC as Log;
 
 
-var mainView;
 
 var globalTeams = { 57 => "Arsenal",58 => "Aston Villa",1044 => "Bournemouth",61 => "Chelsea",354 => "Crystal",62 => "Everton",338 => "Foxes",64 => "Liverpool",65 => "ManCity",66 => "ManUnited",67 => "Newcastle",68 => "Norwich",340 => "Southampton",73 => "Spurs",70 => "Stoke",71 => "Sunderland",72 => "Swans",346 => "Watford",74 => "West Bromwich",563 => "West Ham" };
 
 class FootballTeamApp extends App.AppBase {
 
-
+	hidden var infoView;
     hidden var mModel;
     hidden var logger;
     hidden var propertyHandler;
@@ -23,10 +22,10 @@ class FootballTeamApp extends App.AppBase {
   		config.setLogLevel(Log.DEBUG);
   		Log4MonkeyC.setLogConfig(config);
   		logger = Log.getLogger("FootballTeamApp");
-
-      mainView = new FootballTeamView();
-      propertyHandler = new PropertyHandler();
-      mModel = new FootballTeamModel(propertyHandler, mainView.method(:onInfoReady),0);
+		
+		infoView = new InfoView();
+		propertyHandler = new PropertyHandler();
+		mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),0);
 
     }
 
@@ -37,7 +36,8 @@ class FootballTeamApp extends App.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
     	logger.debug("Starting application");
-        return [ mainView, new FootballTeamViewInputDelegate(propertyHandler)];
+        return [ infoView];
+        //return [ mainView, new FootballTeamViewInputDelegate(propertyHandler)];
     }
 
 }

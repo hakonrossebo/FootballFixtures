@@ -23,34 +23,40 @@ class PropertyHandler {
 	}
 
 
-	function getTeamFixturesInfo(){
+	function getTeamFixturesInfo(selectedNewTeamId){
 		var app = App.getApp();
 		var storedTeamInfo = app.getProperty(CURRENT_SETTINGS_IDENTITY);
 		if(null!=storedTeamInfo)
 		{
+			if (selectedNewTeamId != storedTeamInfo["teamId"])
+			{
+				logger.debug("User changed team Id");
+				propertyTemplate["teamId"] = selectedNewTeamId;
+				propertyTemplate["selectedTeamValid"] = true;
+				propertyTemplate["dateValid"] = false;
+				return propertyTemplate;
+			}
 			if (settingsValid(storedTeamInfo))
 			{
 				logger.debug("Using data from settings");
-				storedTeamInfo.dateValid = true;
-				storedTeamInfo.selectedTeamValid = true;
+				storedTeamInfo["dateValid"] = true;
+				storedTeamInfo["selectedTeamValid"] = true;
 				return storedTeamInfo;
 			}
-			else
-			{
-				logger.debug("Using only id from settings");
-				storedTeamInfo.dateValid = false;
-				storedTeamInfo.selectedTeamValid = true;
-				storedTeamInfo.teamId = storedTeamInfo["teamId"];
-				return storedTeamInfo;
-			}
+			logger.debug("Using only id from settings");
+			storedTeamInfo["dateValid"] = false;
+			storedTeamInfo["selectedTeamValid"] = true;
+			storedTeamInfo["teamId"] = storedTeamInfo["teamId"];
+			return storedTeamInfo;
 		}
 
 		var storedOldTeamInfo = app.getProperty(OLD_SETTINGS_IDENTITY);
 		if(null!=storedOldTeamInfo)
 		{
 			logger.debug("Using only id from old settings");
-			propertyTemplate.teamId = storedOldTeamInfo["teamId"];
-			propertyTemplate.selectedTeamValid = true;
+			propertyTemplate["teamId"] = storedOldTeamInfo["teamId"];
+			propertyTemplate["selectedTeamValid"] = true;
+			propertyTemplate["dateValid"] = false;
 			return propertyTemplate;
 		}
 		else {

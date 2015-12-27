@@ -2,15 +2,28 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Graphics as G;
 
-class WaitingConnectionView extends Ui.View {
+class InfoView extends Ui.View {
+    hidden var logger;
+    hidden var infoText = Ui.loadResource(Rez.Strings.MainLoading);
+    hidden var callbackHandler;
 
-    function initialize() {
+    function initialize(callbackHandler) {
+        logger = Log.getLogger("InfoView");
+        self.callbackHandler = callbackHandler;
         View.initialize();
     }
 
     //! Load your resources here
     function onLayout(dc) {
     }
+
+    function onInfoUpdated(info)
+    {
+        logger.debug("Inside info updated");
+        infoText = info;
+        Ui.requestUpdate();
+	}
+
 
     //! Called when this View is brought to the foreground. Restore
     //! the state of this View and prepare it to be shown. This includes
@@ -25,7 +38,7 @@ class WaitingConnectionView extends Ui.View {
         // Call the parent onUpdate function to redraw the layout
         dc.setColor(G.COLOR_WHITE, G.COLOR_BLACK);
         dc.clear();
-        dc.drawText(dc.getWidth()/2, dc.getHeight()/4, G.FONT_MEDIUM, "No mobile connection", G.TEXT_JUSTIFY_CENTER|G.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(dc.getWidth()/2, dc.getHeight()/4, G.FONT_MEDIUM, infoText, G.TEXT_JUSTIFY_CENTER|G.TEXT_JUSTIFY_VCENTER);
     }
 
     //! Called when this View is removed from the screen. Save the
