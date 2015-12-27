@@ -18,8 +18,9 @@ class PickerChooserDelegate extends Ui.PickerDelegate {
 
     function onAccept(values) {
    		logger.debug("selected: " + values[0] );
+		var infoView = new InfoView();
+		var mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),values[0]);
+		Ui.switchToView(infoView, null, Ui.SLIDE_RIGHT);
 
-        var mModel = new FootballTeamModel(propertyHandler, mainView.method(:onInfoReady),values[0]);
-        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
 }

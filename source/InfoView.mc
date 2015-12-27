@@ -1,15 +1,14 @@
 using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Graphics as G;
+using Log4MonkeyC as Log;
 
 class InfoView extends Ui.View {
     hidden var logger;
     hidden var infoText = Ui.loadResource(Rez.Strings.MainLoading);
-    hidden var callbackHandler;
 
-    function initialize(callbackHandler) {
+    function initialize() {
         logger = Log.getLogger("InfoView");
-        self.callbackHandler = callbackHandler;
         View.initialize();
     }
 

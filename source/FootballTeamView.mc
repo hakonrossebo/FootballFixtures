@@ -19,8 +19,9 @@ class FootballTeamView extends Ui.View {
     hidden var mModel;
     hidden var logger;
 
-    function initialize(){
-      logger = Log.getLogger("FootballTeamView");
+    function initialize(teamFixturesInfo){
+    	logger = Log.getLogger("FootballTeamView");
+    	prepareViewInfo(teamFixturesInfo);
     }
 
     //! Load your resources here
@@ -35,8 +36,6 @@ class FootballTeamView extends Ui.View {
 
     //! Update the view
     function onUpdate(dc) {
-
-
         var TeamName = View.findDrawableById("TeamName");
         TeamName.setText(mFootballTeamInfo);
 
@@ -48,8 +47,10 @@ class FootballTeamView extends Ui.View {
 
         var txtNextMatch1 = View.findDrawableById("txtNextMatch1");
         txtNextMatch1.setText(mNextMatches[0]);
+
         var txtNextMatch2 = View.findDrawableById("txtNextMatch2");
         txtNextMatch2.setText(mNextMatches[1]);
+
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
     }
@@ -59,26 +60,26 @@ class FootballTeamView extends Ui.View {
     function onHide() {
     }
 
-    function onInfoReady(info)
+    function prepareViewInfo(teamFixturesInfo)
     {
-        logger.debug("Inside infoready");
+        logger.debug("Inside prepareViewInfo");
 		try
 		{
-	        if (info instanceof FootballTeamInfo)
+	        if (1==1)
 	        {
-	        	  logger.debug("Inside infoready - instance ok");
-	            mFootballTeamInfo = info.name;
-	            logger.debug("team: " + info.name);
-	            mTeamId = info.teamId;
-	            setLastFixtureInfo(info.previousFixtures);
-				setFixtureInfo(info.nextFixtures);
+	        	logger.debug("Inside infoready - instance ok");
+	            mFootballTeamInfo = globalTeams[teamFixturesInfo["teamId"]];
+	            logger.debug("team: " + mFootballTeamInfo);
+	            mTeamId = teamFixturesInfo["teamId"];
+	            setLastFixtureInfo(teamFixturesInfo["previousFixtures"]);
+				setFixtureInfo(teamFixturesInfo["nextFixtures"]);
 				logger.debug("Used memory:");
-				info = null;
 				logger.debug(Sys.getSystemStats().usedMemory);
 	        }
-	        else if (info instanceof Lang.String)
+	        else 
 	        {
-	            mFootballTeamInfo = info;
+	            mFootballTeamInfo = "View error";
+				logger.debug("View error. No dictionary with info from model.");
 	        }
 		}
 		catch (ex)

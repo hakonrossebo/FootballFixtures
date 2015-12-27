@@ -22,9 +22,9 @@ class FootballTeamApp extends App.AppBase {
   		config.setLogLevel(Log.DEBUG);
   		Log4MonkeyC.setLogConfig(config);
   		logger = Log.getLogger("FootballTeamApp");
+		propertyHandler = new PropertyHandler();
 		
 		infoView = new InfoView();
-		propertyHandler = new PropertyHandler();
 		mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),0);
 
     }
