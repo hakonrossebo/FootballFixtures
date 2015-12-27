@@ -37,6 +37,7 @@ class FootballTeamModel
         notify = handler;
 		try
 		{
+			
 	        var app = App.getApp();
 	        var storedTeamInfo = app.getProperty("TeamFixtureInfoJson");
 	        if(null!=storedTeamInfo && selectedTeamId == 0)
