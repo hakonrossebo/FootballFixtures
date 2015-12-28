@@ -68,6 +68,7 @@ class FootballTeamView extends Ui.View {
 	        if (1==1)
 	        {
 	        	logger.debug("Inside infoready - instance ok");
+	        	var durationTest = teamFixturesInfo.getNextFixtureDuration();
 	            mFootballTeamInfo = globalTeams[teamFixturesInfo.getTeamId()];
 	            logger.debug("team: " + mFootballTeamInfo);
 	            mTeamId = teamFixturesInfo.getTeamId();
@@ -120,7 +121,7 @@ class FootballTeamView extends Ui.View {
         	fixtureOpponent = fixture["awayTeamName"];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
-        var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
+        var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
         var formattedDate = getFormattedDate(fixtureDateMoment);
 
 
@@ -129,7 +130,7 @@ class FootballTeamView extends Ui.View {
     }
     function getNextFixtureDuration(fixture)
     {
-        var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
+        var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
         var duration = fixtureDateMoment.subtract(Time.now());
 	       logger.debug(duration.value());
 		var formattedDuration = format_duration(duration.value());
@@ -156,25 +157,6 @@ class FootballTeamView extends Ui.View {
         return result;
     }
 
-    function parseISO8601DateToMoment(dateStr)
-    {
-    	// example - 2015-12-28T17:30:00Z
-		try
-		{
-			var year = dateStr.substring(0, 4).toNumber();
-			var month = dateStr.substring(5, 7).toNumber();
-			var day = dateStr.substring(8, 10).toNumber();
-			var hour = dateStr.substring(11, 13).toNumber();
-			var minute = dateStr.substring(14, 16).toNumber();
-			var dateTime = Time.Gregorian.moment({:year=>year,:month=>month,:day=>day, :hour=>hour,:minute=>minute,:second=>0});
-			return dateTime;
-		}
-		catch (ex)
-		{
-			logger.error("Error - defaulting time to now");
-			return Time.now();
-		}
-    }
     function getFormattedDate(dateTime)
     {
     	var shortDate = Time.Gregorian.info(dateTime, Toybox.Time.FORMAT_SHORT);

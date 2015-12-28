@@ -2,6 +2,7 @@ using Log4MonkeyC as Log;
 using Toybox.Application as App;
 
 class FixturesInfo {
+	hidden var logger;
 	var properties = {
 		"lastModified" => Time.now().value(),
 		"nextFixtureDate" => null,
@@ -11,6 +12,13 @@ class FixturesInfo {
 	};
 	var dateValid = false;
 	var selectedTeamValid = false;
+
+
+
+	// Constructor
+	function initialize() {
+		logger = Log.getLogger("FixturesInfo" );
+	}
 	function getNextFixtureDate() {
 		return Time.now().value();
 	}	
@@ -36,6 +44,15 @@ class FixturesInfo {
 	function getPreviousFixtures() {
 		return properties["previousFixtures"];	
 	}
+    function getNextFixtureDuration()
+    {	
+    	var fixture = properties["nextFixtures"]["fixtures"][0];
+        var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
+        var duration = fixtureDateMoment.subtract(Time.now());
+        logger.debug("Next fixture duration: " + duration.value());
+        return duration;
+    }
+	
 }
 
 
