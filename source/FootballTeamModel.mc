@@ -43,14 +43,14 @@ class FootballTeamModel
 				teamFixturesInfo = null;
 				return;
 			}
-
-			// TeamId is ok, but fixtures needs to be refreshed
+	    	logger.debug("TeamId is ok, but fixtures needs to be refreshed" );
           	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
     	    	callbackHandler.invoke("No phone connection");
     	    	return;
     	    }
     	    userTeamId = teamFixturesInfo.getTeamId();
+	    	logger.debug("TeamId to refresh: " + userTeamId );
 
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
@@ -73,7 +73,7 @@ class FootballTeamModel
 		catch (ex)
 		{
 	        callbackHandler.invoke("Error");
-			logger.error("Error");
+			logger.error("Error: " + ex.getErrorMessage());    
 		}
     }
 

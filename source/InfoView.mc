@@ -18,7 +18,7 @@ class InfoView extends Ui.View {
 
     function onInfoUpdated(info)
     {
-        logger.debug("Inside info updated");
+        logger.debug("Inside info updated: " + info);
         infoText = info;
         Ui.requestUpdate();
 	}

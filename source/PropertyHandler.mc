@@ -28,7 +28,7 @@ class PropertyHandler {
 				storedTeamInfo = null;
 				return fixturesInfo;
 			}
-			if (storedTeamInfo.validatePropertiesNeedsRefresh())
+			if (!storedTeamInfo.validatePropertiesNeedsRefresh())
 			{
 				logger.debug("Using valid data from settings");
 				fixturesInfo.properties = storedTeamInfo.properties;

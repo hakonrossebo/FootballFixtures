@@ -44,34 +44,56 @@ class FixturesInfo {
 	function getPreviousFixtures() {
 		return properties["previousFixtures"];	
 	}
+
+    function getLastUpdatedDuration() {
+		var lastUpdated = new Time.Moment(properties["lastModified"].toLong());
+		var timeNow = Time.now();
+        var lastUpdatedDuration = timeNow.subtract(lastUpdated);
+		logger.debug("getLastUpdatedDuration. Duration since last settings (s) " + lastUpdatedDuration.value());
+        return lastUpdatedDuration.value();
+    }
+
     function getNextFixtureDuration()
     {	
     	var fixture = properties["nextFixtures"]["fixtures"][0];
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
         var duration = fixtureDateMoment.subtract(Time.now());
         logger.debug("Next fixture duration: " + duration.value());
-        return duration;
+        return duration.value();
     }
     
     function checkValidProperties() {
     	return null != properties;
     }
     
+    
+    
 	function validatePropertiesNeedsRefresh()
 	{
-		var lastUpdated = new Time.Moment(properties["lastModified"].toLong());
-		var timeNow = Time.now();
-        var duration = timeNow.subtract(lastUpdated);
-		logger.debug("Validate refresh. Duration since last settings (s) " + duration.value());
-		if (duration.value() > 60*60*6)
+		var MINUTE = 60;
+		var HOUR = MINUTE*60;
+		var DAY = HOUR*24;
+		var MAX_DURATION_PAST_CURRENT_TIME = (HOUR*4) * (-1);
+		var MAX_DURATION_SINCE_LAST_UPDATE_TIME = DAY*7;
+		var result = false;
+        logger.debug("Checking refresh. MAX_DURATION_PAST_CURRENT_TIME: " + MAX_DURATION_PAST_CURRENT_TIME);
+		var nextFixtureDuration = getNextFixtureDuration();
+		var lastUpdatedDuration = getLastUpdatedDuration();
+		if (nextFixtureDuration < MAX_DURATION_PAST_CURRENT_TIME)
 		{
-			return false;
+	        logger.debug("nextFixtureDuration < MAX_DURATION_PAST_CURRENT_TIME, checking last updated time");
+			if (lastUpdatedDuration > HOUR)
+			{
+		        logger.debug("lastUpdatedDuration > HOUR, refreshing");
+				result = true;
+			}
 		}
-		else
+		logger.debug("Checking if properties needs to be refreshed anyways..");
+		if (lastUpdatedDuration > MAX_DURATION_SINCE_LAST_UPDATE_TIME)
 		{
-			return true;
+			result = true;
 		}
+        logger.debug("Return value from validatePropertiesNeedsRefresh: " + result);
+		return result;
 	}
-    
-	
 }
