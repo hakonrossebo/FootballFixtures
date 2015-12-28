@@ -30,6 +30,7 @@ class FootballTeamModel
 			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
 			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
 			{
+				logger.debug("Switching view to FootballTeamView" );
 				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
 				teamFixturesInfo = null;
 				return;
@@ -37,6 +38,7 @@ class FootballTeamModel
 			if (!teamFixturesInfo.selectedTeamValid)
 			{
 				//User need to select a team
+				logger.debug("Switching view to PickerChooser" );
 				Ui.switchToView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
 				teamFixturesInfo = null;
 				return;

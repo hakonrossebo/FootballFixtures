@@ -52,5 +52,26 @@ class FixturesInfo {
         logger.debug("Next fixture duration: " + duration.value());
         return duration;
     }
+    
+    function checkValidProperties() {
+    	return null != properties;
+    }
+    
+	function validatePropertiesNeedsRefresh()
+	{
+		var lastUpdated = new Time.Moment(properties["lastModified"].toLong());
+		var timeNow = Time.now();
+        var duration = timeNow.subtract(lastUpdated);
+		logger.debug("Validate refresh. Duration since last settings (s) " + duration.value());
+		if (duration.value() > 60*60*6)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+    
 	
 }

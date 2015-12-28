@@ -89,6 +89,7 @@ class FootballTeamView extends Ui.View {
 			mFootballTeamInfo = "Error";
 			logger.error("Error: " + ex.getErrorMessage());
 		}
+		logger.debug("Requesting UI update");
         Ui.requestUpdate();
     }
     function setFixtureInfo(fixtures)

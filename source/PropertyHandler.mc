@@ -6,41 +6,42 @@ class PropertyHandler {
 	hidden const CURRENT_SETTINGS_IDENTITY = "TeamFixtureInfoJson_v2";
 	hidden var logger;
 
-
-
 	// Constructor
 	function initialize() {
 		logger = Log.getLogger("PropertyHandler" );
 	}
 
-
 	function getTeamFixturesInfo(selectedNewTeamId){
 		var fixturesInfo = new FixturesInfo();
+		var storedTeamInfo = new FixturesInfo();
 		var app = App.getApp();
-		var storedTeamInfo = app.getProperty(CURRENT_SETTINGS_IDENTITY);
-			if(null!=storedTeamInfo)
+		storedTeamInfo.properties = app.getProperty(CURRENT_SETTINGS_IDENTITY);
+		if(storedTeamInfo.checkValidProperties())
 		{
 			removeOldProperties(app);
-			if (selectedNewTeamId != 0 && (selectedNewTeamId != storedTeamInfo["teamId"]))
+			if (selectedNewTeamId != 0) // && (selectedNewTeamId != storedTeamInfo.getTeamId()))
 			{
 				logger.debug("User changed team Id. Returning setting with only team id.");
 				fixturesInfo.setTeamId(selectedNewTeamId);
 				fixturesInfo.dateValid = false;
 				fixturesInfo.selectedTeamValid = true;
+				storedTeamInfo = null;
 				return fixturesInfo;
 			}
-			if (settingsValid(storedTeamInfo))
+			if (storedTeamInfo.validatePropertiesNeedsRefresh())
 			{
 				logger.debug("Using valid data from settings");
-				fixturesInfo.properties = storedTeamInfo;
+				fixturesInfo.properties = storedTeamInfo.properties;
 				fixturesInfo.dateValid = true;
 				fixturesInfo.selectedTeamValid = true;
+				storedTeamInfo = null;
 				return fixturesInfo;
 			}
 			logger.debug("Using only team id from settings. Returning settings with only team id.");
-			fixturesInfo.properties = storedTeamInfo;
+			fixturesInfo.properties = storedTeamInfo.properties;
 			fixturesInfo.dateValid = false;
 			fixturesInfo.selectedTeamValid = true;
+			storedTeamInfo = null;
 			return fixturesInfo;
 		}
 
@@ -53,10 +54,12 @@ class PropertyHandler {
 			fixturesInfo.selectedTeamValid = true;
 			app.deleteProperty(OLD_SETTINGS_IDENTITY);
 			app.saveProperties();
+			storedOldTeamInfo = null;
 			return fixturesInfo;
 		}
 		else 
 		{
+			storedOldTeamInfo = null;
 			logger.debug("No settings exists. Using clean property template.");
 			return fixturesInfo;
 		}
@@ -68,6 +71,7 @@ class PropertyHandler {
 		{
 			app.deleteProperty(OLD_SETTINGS_IDENTITY);
 			app.saveProperties();
+			storedOldTeamInfo = null;
 		}
 	}
 	
@@ -89,23 +93,6 @@ class PropertyHandler {
 		return fixturesInfo;
 	}
 
-
-
-	function settingsValid(storedTeamInfo)
-	{
-		var lastUpdated = new Time.Moment(storedTeamInfo["lastModified"].toLong());
-		var timeNow = Time.now();
-        var duration = timeNow.subtract(lastUpdated);
-		logger.debug("Duration since last settings (s) " + duration.value());
-		if (duration.value() > 60*60*6)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
 
 
 }
