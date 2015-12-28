@@ -69,7 +69,7 @@ class FootballTeamView extends Ui.View {
 	        {
 	        	logger.debug("Inside infoready - instance ok");
 	        	var durationTest = teamFixturesInfo.getNextFixtureDuration();
-	            mFootballTeamInfo = globalTeams[teamFixturesInfo.getTeamId()];
+	            mFootballTeamInfo = Constants.leagueTeams[teamFixturesInfo.getTeamId()];
 	            logger.debug("team: " + mFootballTeamInfo);
 	            mTeamId = teamFixturesInfo.getTeamId();
 	            setLastFixtureInfo(teamFixturesInfo.getPreviousFixtures());
