@@ -13,21 +13,20 @@ class PropertyHandler {
 
 	function getTeamFixturesInfo(selectedNewTeamId){
 		var fixturesInfo = new FixturesInfo();
+		if (selectedNewTeamId != 0) // && (selectedNewTeamId != storedTeamInfo.getTeamId()))
+		{
+			logger.debug("User changed team Id. Returning setting with only team id.");
+			fixturesInfo.setTeamId(selectedNewTeamId);
+			fixturesInfo.dateValid = false;
+			fixturesInfo.selectedTeamValid = true;
+			return fixturesInfo;
+		}
 		var storedTeamInfo = new FixturesInfo();
 		var app = App.getApp();
 		storedTeamInfo.properties = app.getProperty(CURRENT_SETTINGS_IDENTITY);
 		if(storedTeamInfo.checkValidProperties())
 		{
 			removeOldProperties(app);
-			if (selectedNewTeamId != 0) // && (selectedNewTeamId != storedTeamInfo.getTeamId()))
-			{
-				logger.debug("User changed team Id. Returning setting with only team id.");
-				fixturesInfo.setTeamId(selectedNewTeamId);
-				fixturesInfo.dateValid = false;
-				fixturesInfo.selectedTeamValid = true;
-				storedTeamInfo = null;
-				return fixturesInfo;
-			}
 			if (!storedTeamInfo.validatePropertiesNeedsRefresh())
 			{
 				logger.debug("Using valid data from settings");

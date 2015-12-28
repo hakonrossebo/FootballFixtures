@@ -39,7 +39,7 @@ class FootballTeamModel
 			{
 				//User need to select a team
 				logger.debug("Switching view to PickerChooser" );
-				Ui.switchToView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
+				Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
 				teamFixturesInfo = null;
 				return;
 			}
@@ -54,7 +54,13 @@ class FootballTeamModel
 
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
-
+			if (Constants.current_environment == Constants.env_OfflineTesting)
+			{
+				logger.debug("Using localhost test json");
+				teamNextFixturesUrl = "http://localhost:3000/nextfixtures";
+				teamPreviousFixturesUrl = "http://localhost:3000/previousfixtures";			
+			}
+		
   	    	logger.debug("Fetching data from web");
 			var token = Ui.loadResource (Rez.Strings.API_Token);
 			var options = {

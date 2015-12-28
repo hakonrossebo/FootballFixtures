@@ -68,7 +68,21 @@ class FixturesInfo {
     }
     
     function checkValidProperties() {
-    	return null != properties;
+    	var valid = (null != properties);
+    	logger.debug("Checking valid properties - not null: " + valid);
+		try {
+			var next = getNextFixtureDuration();
+			var lastUpdatedDuration = getLastUpdatedDuration();
+			var homeTeam = properties["nextFixtures"]["fixtures"][0]["homeTeamName"];
+			var season = properties["nextFixtures"]["fixtures"][0]["soccerseasonId"];
+		}
+		catch (ex)
+		{
+	    	logger.debug("Checking valid properties - dictionary not valid.");
+			return false;				
+		}
+
+    	return valid;
     }
     
     
@@ -80,6 +94,7 @@ class FixturesInfo {
 		var DAY = HOUR*24;
 		var MAX_DURATION_PAST_CURRENT_TIME = (HOUR*4) * (-1);
 		var MAX_DURATION_SINCE_LAST_UPDATE_TIME = DAY*7;
+		var MAX_DURATION_REFRESH_INTERVAL = HOUR*4; //MINUTE*1;
 		var result = false;
         logger.debug("Checking refresh. MAX_DURATION_PAST_CURRENT_TIME: " + MAX_DURATION_PAST_CURRENT_TIME);
 		var nextFixtureDuration = getNextFixtureDuration();
@@ -87,7 +102,7 @@ class FixturesInfo {
 		if (nextFixtureDuration < MAX_DURATION_PAST_CURRENT_TIME)
 		{
 	        logger.debug("nextFixtureDuration < MAX_DURATION_PAST_CURRENT_TIME, checking last updated time");
-			if (lastUpdatedDuration > HOUR)
+			if (lastUpdatedDuration > MAX_DURATION_REFRESH_INTERVAL)
 			{
 		        logger.debug("lastUpdatedDuration > HOUR, refreshing");
 				result = true;

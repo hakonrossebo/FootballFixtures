@@ -6,6 +6,7 @@ using Log4MonkeyC as Log;
 class InfoView extends Ui.View {
     hidden var logger;
     hidden var infoText = Ui.loadResource(Rez.Strings.MainLoading);
+	
 
     function initialize() {
         logger = Log.getLogger("InfoView");
