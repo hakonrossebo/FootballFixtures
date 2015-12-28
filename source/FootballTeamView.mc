@@ -72,8 +72,8 @@ class FootballTeamView extends Ui.View {
 	            mFootballTeamInfo = Constants.leagueTeams[teamFixturesInfo.getTeamId()];
 	            logger.debug("team: " + mFootballTeamInfo);
 	            mTeamId = teamFixturesInfo.getTeamId();
-	            setLastFixtureInfo(teamFixturesInfo.getPreviousFixtures());
-				setFixtureInfo(teamFixturesInfo.getNextFixtures());
+	            setLastFixtureInfo(teamFixturesInfo);
+				setFixtureInfo(teamFixturesInfo);
 				logger.debug("Used memory:");
 				logger.debug(Sys.getSystemStats().usedMemory);
 	        }
@@ -92,13 +92,14 @@ class FootballTeamView extends Ui.View {
 		logger.debug("Requesting UI update");
         Ui.requestUpdate();
     }
-    function setFixtureInfo(fixtures)
+    function setFixtureInfo(teamFixturesInfo)
     {
 		try
 		{
+			var fixtures = teamFixturesInfo.getNextFixtures();
 	        mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
 	        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
-	        mNextMatchDuration = getNextFixtureDuration(fixtures["fixtures"][0]);
+	        mNextMatchDuration = DateTimeUtils.formatDurationToDDHHMM(teamFixturesInfo.getNextFixtureDuration());
 		}
 		catch (ex)
 		{
@@ -107,8 +108,9 @@ class FootballTeamView extends Ui.View {
 		}
 
     }
-    function setLastFixtureInfo(fixtures)
+    function setLastFixtureInfo(teamFixturesInfo)
     {
+		var fixtures = teamFixturesInfo.getPreviousFixtures();
 	    var last = fixtures["count"] - 1;
         mPreviousMatch = getLastFixture(fixtures["fixtures"][last]);
     }
@@ -128,18 +130,6 @@ class FootballTeamView extends Ui.View {
 
         var result = Lang.format(fixtureTemplate, [formattedDate, fixtureLocation, fixtureOpponent ]);
         return result;
-    }
-    function getNextFixtureDuration(fixture)
-    {
-    	var timeNow = Time.now();
-        var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
-        var duration = fixtureDateMoment.subtract(timeNow);
-        var durationValue = duration.value();
-        if (fixtureDateMoment.lessThan(timeNow)) {
-        	durationValue = durationValue * -1;
-        }
-		var formattedDuration = DateTimeUtils.formatDurationToDDHHMM(durationValue);
-        return formattedDuration;
     }
 
     function getLastFixture(fixture)
