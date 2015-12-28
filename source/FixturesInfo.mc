@@ -55,11 +55,16 @@ class FixturesInfo {
 
     function getNextFixtureDuration()
     {	
+    	var timeNow = Time.now();
     	var fixture = properties["nextFixtures"]["fixtures"][0];
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
-        var duration = fixtureDateMoment.subtract(Time.now());
-        logger.debug("Next fixture duration: " + duration.value());
-        return duration.value();
+        var duration = fixtureDateMoment.subtract(timeNow);
+        var durationValue = duration.value();
+        if (fixtureDateMoment.lessThan(timeNow)) {
+        	durationValue = durationValue * -1;
+        }
+        logger.debug("Next fixture duration: " + durationValue);
+        return durationValue;
     }
     
     function checkValidProperties() {

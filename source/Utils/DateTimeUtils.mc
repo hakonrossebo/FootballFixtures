@@ -28,6 +28,12 @@ module DateTimeUtils {
     }
     
 	function formatDurationToDDHHMM(seconds) {
+		var sign = "";
+		if (seconds < 0)
+		{
+			sign = "-";
+			seconds = seconds * -1;
+		}
 		try
 		{
 			var days = seconds / 86400;
@@ -38,7 +44,7 @@ module DateTimeUtils {
 			seconds -= hours * 3600;
 			var minutes = seconds / 60;
 			minutes = minutes.toLong() % 60;
-		    return Toybox.Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
+		    return Toybox.Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$$2$:$3$:$4$", [sign,days, hours.format("%02d"), minutes.format("%02d")]);
 		}
 		catch (ex)
 		{

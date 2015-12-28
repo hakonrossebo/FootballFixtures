@@ -131,10 +131,14 @@ class FootballTeamView extends Ui.View {
     }
     function getNextFixtureDuration(fixture)
     {
+    	var timeNow = Time.now();
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
-        var duration = fixtureDateMoment.subtract(Time.now());
-	       logger.debug(duration.value());
-		var formattedDuration = DateTimeUtils.formatDurationToDDHHMM(duration.value());
+        var duration = fixtureDateMoment.subtract(timeNow);
+        var durationValue = duration.value();
+        if (fixtureDateMoment.lessThan(timeNow)) {
+        	durationValue = durationValue * -1;
+        }
+		var formattedDuration = DateTimeUtils.formatDurationToDDHHMM(durationValue);
         return formattedDuration;
     }
 
