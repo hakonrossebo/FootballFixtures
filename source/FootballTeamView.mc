@@ -122,7 +122,7 @@ class FootballTeamView extends Ui.View {
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
-        var formattedDate = getFormattedDate(fixtureDateMoment);
+        var formattedDate = DateTimeUtils.getFormattedDateDDMMHHmm(fixtureDateMoment);
 
 
         var result = Lang.format(fixtureTemplate, [formattedDate, fixtureLocation, fixtureOpponent ]);
@@ -133,7 +133,7 @@ class FootballTeamView extends Ui.View {
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
         var duration = fixtureDateMoment.subtract(Time.now());
 	       logger.debug(duration.value());
-		var formattedDuration = format_duration(duration.value());
+		var formattedDuration = DateTimeUtils.formatDurationToDDHHMM(duration.value());
         return formattedDuration;
     }
 
@@ -156,31 +156,4 @@ class FootballTeamView extends Ui.View {
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);
         return result;
     }
-
-    function getFormattedDate(dateTime)
-    {
-    	var shortDate = Time.Gregorian.info(dateTime, Toybox.Time.FORMAT_SHORT);
-    	return Lang.format("$1$/$2$ $3$:$4$", [shortDate.day, shortDate.month, shortDate.hour.format("%02d"), shortDate.min.format("%02d")]);
-    }
-
-	function format_duration(seconds) {
-		try
-		{
-			var days = seconds / 86400;
-			days = days.toLong();
-			seconds -= days * 86400;
-			var hours = seconds / 3600;
-			hours = hours.toLong() % 24;
-			seconds -= hours * 3600;
-			var minutes = seconds / 60;
-			minutes = minutes.toLong() % 60;
-		    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
-		}
-		catch (ex)
-		{
-			logger.error("Error in date formatting");
-			return "0:0:0";
-		}
-
-	}
 }
