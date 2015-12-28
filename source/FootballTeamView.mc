@@ -65,15 +65,14 @@ class FootballTeamView extends Ui.View {
         logger.debug("Inside prepareViewInfo");
 		try
 		{
-	        //if (teamFixturesInfo instanceof Toybox.Lang.Dictionary)
 	        if (1==1)
 	        {
 	        	logger.debug("Inside infoready - instance ok");
-	            mFootballTeamInfo = globalTeams[teamFixturesInfo["teamId"]];
+	            mFootballTeamInfo = globalTeams[teamFixturesInfo.getTeamId()];
 	            logger.debug("team: " + mFootballTeamInfo);
-	            mTeamId = teamFixturesInfo["teamId"];
-	            setLastFixtureInfo(teamFixturesInfo["previousFixtures"]);
-				setFixtureInfo(teamFixturesInfo["nextFixtures"]);
+	            mTeamId = teamFixturesInfo.getTeamId();
+	            setLastFixtureInfo(teamFixturesInfo.getPreviousFixtures());
+				setFixtureInfo(teamFixturesInfo.getNextFixtures());
 				logger.debug("Used memory:");
 				logger.debug(Sys.getSystemStats().usedMemory);
 	        }
@@ -87,7 +86,7 @@ class FootballTeamView extends Ui.View {
 		catch (ex)
 		{
 			mFootballTeamInfo = "Error";
-			logger.error("Error");
+			logger.error("Error: " + ex.getErrorMessage());
 		}
         Ui.requestUpdate();
     }

@@ -5,7 +5,6 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Log4MonkeyC as Log;
 
-//Testfix branch test
 class FootballTeamModel
 {
     hidden var callbackHandler;
@@ -29,13 +28,13 @@ class FootballTeamModel
 		try
 		{
 			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
-			if (teamFixturesInfo["dateValid"] && teamFixturesInfo["selectedTeamValid"])
+			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
 			{
 				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
 				teamFixturesInfo = null;
 				return;
 			}
-			if (!teamFixturesInfo["selectedTeamValid"])
+			if (!teamFixturesInfo.selectedTeamValid)
 			{
 				//User need to select a team
 				Ui.switchToView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
@@ -49,7 +48,7 @@ class FootballTeamModel
     	    	callbackHandler.invoke("No phone connection");
     	    	return;
     	    }
-    	    userTeamId = teamFixturesInfo["teamId"];
+    	    userTeamId = teamFixturesInfo.getTeamId();
 
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
@@ -84,7 +83,7 @@ class FootballTeamModel
             logger.debug("Received team fixtures info ok");
             teamNextFixturesReceived = true;
             teamNextFixtures = data;
-            onReceiveCheckComplete(true, "NextFixtures");
+            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainNextFixtures));
         }
         else
         {
@@ -99,7 +98,7 @@ class FootballTeamModel
             logger.debug("Received team Previous fixtures info ok");
             teamPreviousFixturesReceived = true;
             teamPreviousFixtures = data;
-            onReceiveCheckComplete(true, "PreviousFixtures");
+            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainPreviousFixtures));
         }
         else
         {

@@ -1,8 +1,41 @@
 using Log4MonkeyC as Log;
 using Toybox.Application as App;
 
-class FootballFixturesPropertyInfo {
+class FixturesInfo {
+	var properties = {
+		"lastModified" => Time.now().value(),
+		"nextFixtureDate" => null,
+		"teamId" => 0,
+		"nextFixtures" => {},
+		"previousFixtures" => {}
+	};
+	var dateValid = false;
+	var selectedTeamValid = false;
+	function getNextFixtureDate() {
+		return Time.now().value();
+	}	
+	function updateLastModifiedDate() {
+		properties["lastModified"] = Time.now().value();	
+	}
+	function setTeamId(teamId) {
+		properties["teamId"] = teamId;	
+	}
+	function setNextFixtures(nextFixtures) {
+		properties["nextFixtures"] = nextFixtures;	
+	}
+	function setPreviousFixtures(previousFixtures) {
+		properties["previousFixtures"] = previousFixtures;	
+	}
 	
+	function getTeamId() {
+		return properties["teamId"];
+	}
+	function getNextFixtures() {
+		return properties["nextFixtures"];	
+	}
+	function getPreviousFixtures() {
+		return properties["previousFixtures"];	
+	}
 }
 
 
@@ -10,15 +43,6 @@ class PropertyHandler {
 	hidden const OLD_SETTINGS_IDENTITY = "TeamFixtureInfoJson";
 	hidden const CURRENT_SETTINGS_IDENTITY = "TeamFixtureInfoJson_v2";
 	hidden var logger;
-	hidden var propertyTemplate = {
-		"dateValid" => false,
-		"selectedTeamValid" => false,
-		"lastModified" => Time.now().value(),
-		"nextFixtureDate" => null,
-		"teamId" => 0,
-		"nextFixtures" => {},
-		"previousFixtures" => {}
-	};
 
 
 
@@ -29,48 +53,50 @@ class PropertyHandler {
 
 
 	function getTeamFixturesInfo(selectedNewTeamId){
+		var fixturesInfo = new FixturesInfo();
 		var app = App.getApp();
 		var storedTeamInfo = app.getProperty(CURRENT_SETTINGS_IDENTITY);
-		if(null!=storedTeamInfo)
+			if(null!=storedTeamInfo)
 		{
 			removeOldProperties(app);
 			if (selectedNewTeamId != 0 && (selectedNewTeamId != storedTeamInfo["teamId"]))
 			{
 				logger.debug("User changed team Id. Returning setting with only team id.");
-				propertyTemplate["teamId"] = selectedNewTeamId;
-				propertyTemplate["selectedTeamValid"] = true;
-				propertyTemplate["dateValid"] = false;
-				return propertyTemplate;
+				fixturesInfo.setTeamId(selectedNewTeamId);
+				fixturesInfo.dateValid = false;
+				fixturesInfo.selectedTeamValid = true;
+				return fixturesInfo;
 			}
 			if (settingsValid(storedTeamInfo))
 			{
 				logger.debug("Using valid data from settings");
-				storedTeamInfo["dateValid"] = true;
-				storedTeamInfo["selectedTeamValid"] = true;
-				return storedTeamInfo;
+				fixturesInfo.properties = storedTeamInfo;
+				fixturesInfo.dateValid = true;
+				fixturesInfo.selectedTeamValid = true;
+				return fixturesInfo;
 			}
 			logger.debug("Using only team id from settings. Returning settings with only team id.");
-			storedTeamInfo["dateValid"] = false;
-			storedTeamInfo["selectedTeamValid"] = true;
-			storedTeamInfo["teamId"] = storedTeamInfo["teamId"];
-			return storedTeamInfo;
+			fixturesInfo.properties = storedTeamInfo;
+			fixturesInfo.dateValid = false;
+			fixturesInfo.selectedTeamValid = true;
+			return fixturesInfo;
 		}
 
 		var storedOldTeamInfo = app.getProperty(OLD_SETTINGS_IDENTITY);
 		if(null!=storedOldTeamInfo)
 		{
 			logger.debug("Using only id from old settings. Removing old settings.");
-			propertyTemplate["teamId"] = storedOldTeamInfo["teamId"];
-			propertyTemplate["selectedTeamValid"] = true;
-			propertyTemplate["dateValid"] = false;
+			fixturesInfo.setTeamId(storedOldTeamInfo["teamId"]);
+			fixturesInfo.dateValid = false;
+			fixturesInfo.selectedTeamValid = true;
 			app.deleteProperty(OLD_SETTINGS_IDENTITY);
 			app.saveProperties();
-			return propertyTemplate;
+			return fixturesInfo;
 		}
 		else 
 		{
 			logger.debug("No settings exists. Using clean property template.");
-			return propertyTemplate;
+			return fixturesInfo;
 		}
 	}
 	
@@ -87,17 +113,18 @@ class PropertyHandler {
 	function setTeamFixturesInfo(nextFixtures, previousFixtures, teamId)
 	{
 		logger.debug("Setting team fixtures info property");
+		var fixturesInfo = new FixturesInfo();
 		var app = App.getApp();
-		propertyTemplate["nextFixtures"] = nextFixtures;
-		propertyTemplate["previousFixtures"] = previousFixtures;
-		propertyTemplate["teamId"] = teamId;
-		propertyTemplate["lastModified"] = Time.now().value();
-		propertyTemplate["nextFixtureDate"] = Time.now().value();
-		propertyTemplate["selectedTeamValid"] = true;
-		propertyTemplate["dateValid"] = true;
-		var storedTeamInfo = app.setProperty(CURRENT_SETTINGS_IDENTITY, propertyTemplate);
+		fixturesInfo.setNextFixtures(nextFixtures);
+		fixturesInfo.setPreviousFixtures(previousFixtures);
+		fixturesInfo.setTeamId(teamId);
+		fixturesInfo.updateLastModifiedDate();
+		fixturesInfo.dateValid = true;
+		fixturesInfo.selectedTeamValid = true;
+
+		var storedTeamInfo = app.setProperty(CURRENT_SETTINGS_IDENTITY, fixturesInfo.properties);
 		app.saveProperties();
-		return propertyTemplate;
+		return fixturesInfo;
 	}
 
 
