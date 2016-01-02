@@ -5,114 +5,84 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Log4MonkeyC as Log;
 
-//Testfix branch test
 class FootballTeamModel
 {
-    hidden var notify;
-    hidden var bUpdateSettings = false;
+    hidden var callbackHandler;
     hidden var logger;
+    hidden var propertyHandler;
   	hidden var teamNextFixtures;
   	hidden var teamNextFixturesReceived = false;
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
-  	hidden var userPref_TeamID = 64;
+  	hidden var userTeamId = 0;
   	hidden var CONST_FIXTURE_DAYS = 20;
   	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
-  	hidden var teamInfoUrl = "";
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
-  	var dict = {
-  		"lastModified" => Time.now().value(),
-  		"teamId" => 0,
-  		"nextFixtures" => {},
-  		"previousFixtures" => {}
-  		 };
-  	//hidden var progressBar;
 
-    function initialize(handler, selectedTeamId)
+    function initialize(propertyHandler, callbackHandlerInfo, selectedNewTeamId)
     {
+        self.propertyHandler = propertyHandler;
         logger = Log.getLogger("FootballTeamModel");
-        notify = handler;
+        callbackHandler = callbackHandlerInfo;
 		try
 		{
-	        var app = App.getApp();
-	        var storedTeamInfo = app.getProperty("TeamFixtureInfoJson");
-	        if(null!=storedTeamInfo && selectedTeamId == 0)
-	        {
-				if (settingsValid(storedTeamInfo))
-				{
-		        	 logger.debug("Using data from settings");
-		            teamNextFixturesReceived = true;
-		            teamNextFixtures = storedTeamInfo["nextFixtures"];
-		            teamPreviousFixturesReceived = true;
-		            teamPreviousFixtures = storedTeamInfo["previousFixtures"];
-		            userPref_TeamID = storedTeamInfo["teamId"];
-		            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainAll));
-					return;
-				}
-				else
-				{
-					logger.debug("Using only id from settings");
-					userPref_TeamID = storedTeamInfo["teamId"];
-				}
-	        }
-	        if (selectedTeamId > 0)
-	        {
-	        	logger.debug("User selected new team: " + selectedTeamId);
-	        	userPref_TeamID = selectedTeamId;
-	        }
-
-          var deviceSettings = Sys.getDeviceSettings();
+			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
+			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
+			{
+				logger.debug("Switching view to FootballTeamView" );
+				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
+				teamFixturesInfo = null;
+				return;
+			}
+			if (!teamFixturesInfo.selectedTeamValid)
+			{
+				//User need to select a team
+				logger.debug("Switching view to PickerChooser" );
+				Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
+				teamFixturesInfo = null;
+				return;
+			}
+	    	logger.debug("TeamId is ok, but fixtures needs to be refreshed" );
+          	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
-    	        var waitingView = new WaitingConnectionView();
-    	        Ui.switchToView(waitingView, null, Ui.SLIDE_RIGHT);
+    	    	callbackHandler.invoke("No phone connection");
+    	    	return;
     	    }
+    	    userTeamId = teamFixturesInfo.getTeamId();
+	    	logger.debug("TeamId to refresh: " + userTeamId );
 
-			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userPref_TeamID, CONST_FIXTURE_DAYS]);
-			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userPref_TeamID, CONST_PREVIOUS_FIXTURE_DAYS]);
-
-	        bUpdateSettings = true;
-  	    	logger.debug("Using data from web");
-	        storedTeamInfo="empty";
-	        //progressBar = new Ui.ProgressBar( "Processing", null );
-	        //Ui.pushView( progressBar, null, Ui.SLIDE_DOWN );
+			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
+			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
+			if (Constants.current_environment == Constants.env_OfflineTesting)
+			{
+				logger.debug("Using localhost test json");
+				teamNextFixturesUrl = "http://localhost:3000/nextfixtures";
+				teamPreviousFixturesUrl = "http://localhost:3000/previousfixtures";			
+			}
+		
+  	    	logger.debug("Fetching data from web");
 			var token = Ui.loadResource (Rez.Strings.API_Token);
 			var options = {
 			    :method => Comm.HTTP_REQUEST_METHOD_GET,
 			    :headers => { "X-Auth-Token" => token,
 			    			  "X-Response-Control" => "minified" 	 }
 			};
-	    	logger.debug("Called for info through API" );
 
 			Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
 			Comm.makeJsonRequest(teamPreviousFixturesUrl, {}, options, method(:onReceivePreviousFixtures));
-
-	        notify.invoke(Ui.loadResource(Rez.Strings.MainLoading));
-	        //progressBar.setDisplayString( "Loading" );
+	    	logger.debug("Invoked json API requests" );
+	        callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainLoading));
+			teamFixturesInfo = null;
+	        
 		}
 		catch (ex)
 		{
-	        notify.invoke("Error");
-			logger.error("Error");
+	        callbackHandler.invoke("Error");
+			logger.error("Error: " + ex.getErrorMessage());    
 		}
-
     }
 
-	function settingsValid(storedTeamInfo)
-	{
-		var lastUpdated = new Time.Moment(storedTeamInfo["lastModified"].toLong());
-		var timeNow = Time.now();
-        var duration = timeNow.subtract(lastUpdated);
-		logger.debug("Duration since last settings (s) " + duration.value());
-		if (duration.value() > 60*60*6)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
 
     function onReceiveNextFixtures(responseCode, data)
     {
@@ -121,7 +91,7 @@ class FootballTeamModel
             logger.debug("Received team fixtures info ok");
             teamNextFixturesReceived = true;
             teamNextFixtures = data;
-            onReceiveCheckComplete(true, "NextFixtures");
+            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainNextFixtures));
         }
         else
         {
@@ -136,7 +106,7 @@ class FootballTeamModel
             logger.debug("Received team Previous fixtures info ok");
             teamPreviousFixturesReceived = true;
             teamPreviousFixtures = data;
-            onReceiveCheckComplete(true, "PreviousFixtures");
+            onReceiveCheckComplete(true, Ui.loadResource(Rez.Strings.MainPreviousFixtures));
         }
         else
         {
@@ -150,36 +120,22 @@ class FootballTeamModel
         logger.debug("Receive complete check");
     	if (!status)
     	{
-    		notify.invoke( "Failed to load\nError: " + responseCode.toString() );
+    		callbackHandler.invoke( "Failed to load\nError: " + status );
     		return;
     	}
     	if (teamNextFixturesReceived && teamPreviousFixturesReceived)
     	{
-    		    logger.debug("Receive complete check - ok");
-            var info = new FootballTeamInfo();
-            info.teamId = userPref_TeamID;
-            info.name = globalTeams[userPref_TeamID];
-            info.nextFixtures = teamNextFixtures;
-            info.previousFixtures = teamPreviousFixtures;
-            logger.debug(info.name);
-            notify.invoke(info);
-            //Ui.popView( Ui.SLIDE_UP );
-
-			if (bUpdateSettings)
-			{
-		        var app = App.getApp();
-		        dict["nextFixtures"] = info.nextFixtures;
-		        dict["previousFixtures"] = info.previousFixtures;
-		        dict["teamId"] = info.teamId;
-		        dict["lastModified"] = Time.now().value();
-		        var storedTeamInfo = app.setProperty("TeamFixtureInfoJson", dict);
-				app.saveProperties();
-			}
+    		logger.debug("Receive complete check - ok");
+    		var teamFixturesInfo = propertyHandler.setTeamFixturesInfo(teamNextFixtures, teamPreviousFixtures, userTeamId);
+    		teamNextFixtures = null;
+    		teamPreviousFixtures = null;
+            callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
+			Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
+			teamFixturesInfo = null;
     	}
     	else
     	{
-	        //progressBar.setDisplayString( receiveType + " done" );
-            notify.invoke(Ui.loadResource(Rez.Strings.MainFinished) + " " + receiveType);
+            callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished) + " " + receiveType);
     	}
 	}
 }

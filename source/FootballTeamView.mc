@@ -6,38 +6,7 @@ using Toybox.Application as App;
 using Toybox.Time as Time;
 using Log4MonkeyC as Log;
 
-class FootballTeamViewInputDelegate extends Ui.InputDelegate
-{
-    hidden var logger;
 
-    function initialize(){
-      logger = Log.getLogger("FootballTeamModel");
-    }
-
-    function onKey(key) {
-      logger.debug("key pressed :" +key.getKey() );
-        if(key.getKey() == Ui.KEY_ENTER || key.getKey() == Ui.KEY_MENU) {
-        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
-        	//Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(), Ui.SLIDE_UP );
-        }
-    }
-
-}
-class MainMenuDelegate extends Ui.MenuInputDelegate {
-    hidden var logger;
-
-    function initialize(){
-      logger = Log.getLogger("FootballTeamModel");
-    }
-
-    function onMenuItem(item) {
-        if ( item == :item_select_team ) {
-        	logger.debug("m1");
-        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(), Ui.SLIDE_IMMEDIATE );
-            // Do something here
-        }
-    }
-}
 
 class FootballTeamView extends Ui.View {
     hidden var mFootballTeamInfo = "";
@@ -50,8 +19,9 @@ class FootballTeamView extends Ui.View {
     hidden var mModel;
     hidden var logger;
 
-    function initialize(){
-      logger = Log.getLogger("FootballTeamView");
+    function initialize(teamFixturesInfo){
+    	logger = Log.getLogger("FootballTeamView");
+    	prepareViewInfo(teamFixturesInfo);
     }
 
     //! Load your resources here
@@ -66,8 +36,6 @@ class FootballTeamView extends Ui.View {
 
     //! Update the view
     function onUpdate(dc) {
-
-
         var TeamName = View.findDrawableById("TeamName");
         TeamName.setText(mFootballTeamInfo);
 
@@ -79,8 +47,10 @@ class FootballTeamView extends Ui.View {
 
         var txtNextMatch1 = View.findDrawableById("txtNextMatch1");
         txtNextMatch1.setText(mNextMatches[0]);
+
         var txtNextMatch2 = View.findDrawableById("txtNextMatch2");
         txtNextMatch2.setText(mNextMatches[1]);
+
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
     }
@@ -90,42 +60,46 @@ class FootballTeamView extends Ui.View {
     function onHide() {
     }
 
-    function onInfoReady(info)
+    function prepareViewInfo(teamFixturesInfo)
     {
-        logger.debug("Inside infoready");
+        logger.debug("Inside prepareViewInfo");
 		try
 		{
-	        if (info instanceof FootballTeamInfo)
+	        if (1==1)
 	        {
-	        	  logger.debug("Inside infoready - instance ok");
-	            mFootballTeamInfo = info.name;
-	            logger.debug("team: " + info.name);
-	            mTeamId = info.teamId;
-	            setLastFixtureInfo(info.previousFixtures);
-				setFixtureInfo(info.nextFixtures);
+	        	logger.debug("Inside infoready - instance ok");
+	        	var durationTest = teamFixturesInfo.getNextFixtureDuration();
+	            mFootballTeamInfo = Constants.leagueTeams[teamFixturesInfo.getTeamId()];
+	            logger.debug("team: " + mFootballTeamInfo);
+	            mTeamId = teamFixturesInfo.getTeamId();
+	            setLastFixtureInfo(teamFixturesInfo);
+				setFixtureInfo(teamFixturesInfo);
 				logger.debug("Used memory:");
-				info = null;
 				logger.debug(Sys.getSystemStats().usedMemory);
 	        }
-	        else if (info instanceof Lang.String)
+	        else 
 	        {
-	            mFootballTeamInfo = info;
+	            mFootballTeamInfo = "View error";
+				logger.debug("View error. No dictionary with info from model.");
 	        }
+	        teamFixturesInfo = null;
 		}
 		catch (ex)
 		{
 			mFootballTeamInfo = "Error";
-			logger.error("Error");
+			logger.error("Error: " + ex.getErrorMessage());
 		}
+		logger.debug("Requesting UI update");
         Ui.requestUpdate();
     }
-    function setFixtureInfo(fixtures)
+    function setFixtureInfo(teamFixturesInfo)
     {
 		try
 		{
+			var fixtures = teamFixturesInfo.getNextFixtures();
 	        mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
 	        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
-	        mNextMatchDuration = getNextFixtureDuration(fixtures["fixtures"][0]);
+	        mNextMatchDuration = DateTimeUtils.formatDurationToDDHHMM(teamFixturesInfo.getNextFixtureDuration());
 		}
 		catch (ex)
 		{
@@ -134,8 +108,9 @@ class FootballTeamView extends Ui.View {
 		}
 
     }
-    function setLastFixtureInfo(fixtures)
+    function setLastFixtureInfo(teamFixturesInfo)
     {
+		var fixtures = teamFixturesInfo.getPreviousFixtures();
 	    var last = fixtures["count"] - 1;
         mPreviousMatch = getLastFixture(fixtures["fixtures"][last]);
     }
@@ -149,20 +124,12 @@ class FootballTeamView extends Ui.View {
         	fixtureOpponent = fixture["awayTeamName"];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
-        var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
-        var formattedDate = getFormattedDate(fixtureDateMoment);
+        var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
+        var formattedDate = DateTimeUtils.getFormattedDateDDMMHHmm(fixtureDateMoment);
 
 
         var result = Lang.format(fixtureTemplate, [formattedDate, fixtureLocation, fixtureOpponent ]);
         return result;
-    }
-    function getNextFixtureDuration(fixture)
-    {
-        var fixtureDateMoment = parseISO8601DateToMoment(fixture["date"]);
-        var duration = fixtureDateMoment.subtract(Time.now());
-	       logger.debug(duration.value());
-		var formattedDuration = format_duration(duration.value());
-        return formattedDuration;
     }
 
     function getLastFixture(fixture)
@@ -184,50 +151,4 @@ class FootballTeamView extends Ui.View {
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);
         return result;
     }
-
-    function parseISO8601DateToMoment(dateStr)
-    {
-    	// example - 2015-12-28T17:30:00Z
-		try
-		{
-			var year = dateStr.substring(0, 4).toNumber();
-			var month = dateStr.substring(5, 7).toNumber();
-			var day = dateStr.substring(8, 10).toNumber();
-			var hour = dateStr.substring(11, 13).toNumber();
-			var minute = dateStr.substring(14, 16).toNumber();
-			var dateTime = Time.Gregorian.moment({:year=>year,:month=>month,:day=>day, :hour=>hour,:minute=>minute,:second=>0});
-			return dateTime;
-		}
-		catch (ex)
-		{
-			logger.error("Error - defaulting time to now");
-			return Time.now();
-		}
-    }
-    function getFormattedDate(dateTime)
-    {
-    	var shortDate = Time.Gregorian.info(dateTime, Toybox.Time.FORMAT_SHORT);
-    	return Lang.format("$1$/$2$ $3$:$4$", [shortDate.day, shortDate.month, shortDate.hour.format("%02d"), shortDate.min.format("%02d")]);
-    }
-
-	function format_duration(seconds) {
-		try
-		{
-			var days = seconds / 86400;
-			days = days.toLong();
-			seconds -= days * 86400;
-			var hours = seconds / 3600;
-			hours = hours.toLong() % 24;
-			seconds -= hours * 3600;
-			var minutes = seconds / 60;
-			minutes = minutes.toLong() % 60;
-		    return Lang.format(Ui.loadResource(Rez.Strings.MainMatchIn) + "$1$:$2$:$3$", [days, hours.format("%02d"), minutes.format("%02d")]);
-		}
-		catch (ex)
-		{
-			logger.error("Error in date formatting");
-			return "0:0:0";
-		}
-
-	}
 }
