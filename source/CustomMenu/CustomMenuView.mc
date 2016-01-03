@@ -37,25 +37,24 @@ class CustomMenuView extends Ui.View {
 
     //! Update the view
     function onUpdate(dc) {
-    	updateMenuItems();
-    
+    	var TeamNamePrev = View.findDrawableById("TeamNamePrev");
+    	var TeamNameCurrent = View.findDrawableById("TeamNameCurrent");
+    	var TeamNameNext = View.findDrawableById("TeamNameNext");
+        TeamNamePrev.setText(getMenuItemByOffset(0));
+        TeamNameCurrent.setText(getMenuItemByOffset(1));
+        TeamNameNext.setText(getMenuItemByOffset(2));
     
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
-
-        var width = dc.getWidth();
-        var height = dc.getHeight();
-        //dc.drawText(width/2,(height/4),Gfx.FONT_MEDIUM, dateStr, Gfx.TEXT_JUSTIFY_CENTER);
-        //dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_BLACK);
     }
     
     function scrollMenuUp(){
     	currentMenuItem --;
-    	Ui.requestUpdate();
+    	updateMenuItems();
     }
     function scrollMenuDown(){
     	currentMenuItem ++;
-    	Ui.requestUpdate();
+    	updateMenuItems();
     }
     
     function updateMenuItems() {
@@ -64,13 +63,8 @@ class CustomMenuView extends Ui.View {
 			{
 				currentMenuItem = menuItemsCount - 1;
 			}
-	    	var TeamNamePrev = View.findDrawableById("TeamNamePrev");
-	    	var TeamNameCurrent = View.findDrawableById("TeamNameCurrent");
-	    	var TeamNameNext = View.findDrawableById("TeamNameNext");
-	        TeamNamePrev.setText(getMenuItemByOffset(0));
-	        TeamNameCurrent.setText(getMenuItemByOffset(1));
-	        TeamNameNext.setText(getMenuItemByOffset(2));
 			getCurrentSelection();
+    		Ui.requestUpdate();
     	}
     }
     
@@ -79,6 +73,7 @@ class CustomMenuView extends Ui.View {
 		var virtualIndex = currentMenuItem + 1;
 		var realIndex = virtualIndex % menuItemsCount;
 		logger.debug ("Current team:" + menuItemsValues[realIndex] + " - Current teamId:" + menuItemsKeys[realIndex]);
+		return menuItemsKeys[realIndex];
     }
     
 	function getMenuItemByOffset(offset) {
