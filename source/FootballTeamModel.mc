@@ -42,7 +42,7 @@ class FootballTeamModel
 				//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
 
 		    	var menuView = new CustomMenuView(Constants.leagueTeams);
-		    	Ui.switchToView( menuView, new CustomMenuViewInputDelegate(propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
+		    	Ui.switchToView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
 
 				teamFixturesInfo = null;
 				return;

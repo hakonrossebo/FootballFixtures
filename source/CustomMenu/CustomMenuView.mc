@@ -10,7 +10,8 @@ class CustomMenuView extends Ui.View {
     hidden var menuItemsKeys;
     hidden var menuItemsCount = 0;
     hidden var currentMenuItem = 0;
-
+	var width=0;
+	var height=0;
 
     function initialize(menuItems) {
     	self.menuItems = menuItems;
@@ -39,6 +40,8 @@ class CustomMenuView extends Ui.View {
 
     //! Update the view
     function onUpdate(dc) {
+		width = dc.getWidth();
+        height = dc.getHeight();    
 		logger.debug ("Start on update custommenu");
     	var TeamNamePrev = View.findDrawableById("TeamNamePrev");
     	var TeamNameCurrent = View.findDrawableById("TeamNameCurrent");
