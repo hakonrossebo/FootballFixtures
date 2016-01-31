@@ -23,6 +23,8 @@ class CustomMenuView extends Ui.View {
 		{
 			logger.debug(menuItemsValues[index] + " - " + menuItemsKeys[index]);
 		}
+		logger.debug ("Finished init custom menu");
+		
     }
 
     //! Load your resources here
@@ -37,6 +39,7 @@ class CustomMenuView extends Ui.View {
 
     //! Update the view
     function onUpdate(dc) {
+		logger.debug ("Start on update custommenu");
     	var TeamNamePrev = View.findDrawableById("TeamNamePrev");
     	var TeamNameCurrent = View.findDrawableById("TeamNameCurrent");
     	var TeamNameNext = View.findDrawableById("TeamNameNext");
