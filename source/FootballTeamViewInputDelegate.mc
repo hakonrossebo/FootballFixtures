@@ -17,8 +17,8 @@ class FootballTeamViewInputDelegate extends Ui.InputDelegate
         	//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
         	////////////////Ui.pushView( new Rez.Menus.MainMenu(), new MainMenuDelegate(propertyHandler), Ui.SLIDE_UP );
 
-    	var menuView = new CustomMenuView(Constants.leagueTeams);
         //return [menuView,  new CustomMenuViewInputDelegate(menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown))]; 
+    	var menuView = new CustomMenuView(Constants.leagueTeams);
     	Ui.switchToView( menuView, new CustomMenuViewInputDelegate(propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
 
         }
