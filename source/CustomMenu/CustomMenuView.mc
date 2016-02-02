@@ -30,28 +30,32 @@ class CustomMenuView extends Ui.View {
 
     //! Load your resources here
     function onLayout(dc) {
-        setLayout(Rez.Layouts.CustomMenuLayout(dc));
     }
 
-    //! Restore the state of the app and prepare the view to be shown
     function onShow() {
-    	//scrollMenuUp();
     }
 
-    //! Update the view
     function onUpdate(dc) {
 		width = dc.getWidth();
-        height = dc.getHeight();    
+        height = dc.getHeight();
+        var centerY = height / 2;
+        var centerX = width / 2;
+        var topPosY = 2 * height  / 9;
+        var bottomPosY = 7 * height  / 9;
+            
 		logger.debug ("Start on update custommenu");
-    	var TeamNamePrev = View.findDrawableById("TeamNamePrev");
-    	var TeamNameCurrent = View.findDrawableById("TeamNameCurrent");
-    	var TeamNameNext = View.findDrawableById("TeamNameNext");
-        TeamNamePrev.setText(getMenuItemByOffset(0));
-        TeamNameCurrent.setText(getMenuItemByOffset(1));
-        TeamNameNext.setText(getMenuItemByOffset(2));
-    
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
+		
+        dc.setColor( Gfx.COLOR_BLACK, Gfx.COLOR_BLACK );
+        dc.clear();
+        
+        dc.setColor( Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT );
+        dc.drawText( centerX, topPosY, Gfx.FONT_MEDIUM, getMenuItemByOffset(0), Gfx.TEXT_JUSTIFY_CENTER );
+        
+        dc.setColor( Gfx.COLOR_DK_BLUE, Gfx.COLOR_TRANSPARENT );
+        dc.drawText( centerX, centerY, Gfx.FONT_LARGE, getMenuItemByOffset(1), Gfx.TEXT_JUSTIFY_CENTER );
+        
+        dc.setColor( Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT );
+        dc.drawText( centerX, bottomPosY, Gfx.FONT_MEDIUM, getMenuItemByOffset(2), Gfx.TEXT_JUSTIFY_CENTER );
     }
     
     function scrollMenuUp(){
