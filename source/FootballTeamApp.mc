@@ -37,6 +37,8 @@ class FootballTeamApp extends App.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
     	logger.debug("Starting application");
+    	//var menuView = new CustomMenuView(Constants.leagueTeams);
+        //return [menuView,  new CustomMenuViewInputDelegate(menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown))]; 
         return [ infoView];
         //return [ mainView, new FootballTeamViewInputDelegate(propertyHandler)];
     }

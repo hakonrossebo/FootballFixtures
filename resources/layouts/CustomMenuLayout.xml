@@ -1,0 +1,5 @@
+<layout id="CustomMenuLayout">
+    <label id="TeamNamePrev" x="center" y="25" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_DK_GRAY" text="--" />
+    <label id="TeamNameCurrent" x="center" y="center" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_BLUE" text="--"/>
+    <label id="TeamNameNext" x="center" y="130" font="Gfx.FONT_MEDIUM" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_DK_GRAY" text="--"/>
+</layout>
