@@ -12,7 +12,6 @@ class FootballTeamApp extends App.AppBase {
         AppBase.initialize();
     }
 
-    //! onStart() is called on application start up
     function onStart() {
   		var config = new Log4MonkeyC.Config();
   		if (Constants.current_environment >= Constants.env_Debug) {
@@ -23,6 +22,7 @@ class FootballTeamApp extends App.AppBase {
   		}
   		Log4MonkeyC.setLogConfig(config);
   		logger = Log.getLogger("FootballTeamApp");
+  		
 		propertyHandler = new PropertyHandler();
 		
 		infoView = new InfoView();
@@ -37,10 +37,7 @@ class FootballTeamApp extends App.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
     	logger.debug("Starting application");
-    	//var menuView = new CustomMenuView(Constants.leagueTeams);
-        //return [menuView,  new CustomMenuViewInputDelegate(menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown))]; 
         return [ infoView];
-        //return [ mainView, new FootballTeamViewInputDelegate(propertyHandler)];
     }
 
 }

@@ -13,10 +13,10 @@ module DateTimeUtils {
 		try
 		{
 			var year = dateStr.substring(0, 4).toNumber();
-			var month = dateStr.substring(5, 7).toNumber();
-			var day = dateStr.substring(8, 10).toNumber();
-			var hour = dateStr.substring(11, 13).toNumber();
-			var minute = dateStr.substring(14, 16).toNumber();
+			var month = trimLeadingZeros(dateStr.substring(5, 7)).toNumber();
+			var day = trimLeadingZeros(dateStr.substring(8, 10)).toNumber();
+			var hour = trimLeadingZeros(dateStr.substring(11, 13)).toNumber();
+			var minute = trimLeadingZeros(dateStr.substring(14, 16)).toNumber();
 			var dateTime = Time.Gregorian.moment({:year=>year,:month=>month,:day=>day, :hour=>hour,:minute=>minute,:second=>0});
 			return dateTime;
 		}
@@ -26,6 +26,20 @@ module DateTimeUtils {
 			return Time.now();
 		}
     }
+    
+	function trimLeadingZeros(source)
+	{
+	    for (var i = 0; i < source.length(); i++)
+	    {
+	        var c = source.substring(i, i+1);
+	        logger.debug(c);
+	        if (!c.equals("0")) {
+	            return source.substring(i, source.length());
+	        }
+	    }
+	    return source;
+	}    
+    
     
 	function formatDurationToDDHHMM(seconds) {
 		var sign = "";
