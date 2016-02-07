@@ -19,14 +19,7 @@ class CustomMenuView extends Ui.View {
     	menuItemsKeys = menuItems.keys();
     	menuItemsValues = menuItems.values();
     	menuItemsCount = menuItems.size();
-	
-//		for (var index = 0;index < menuItemsValues.size() ;index ++)
-//		{
-//			logger.debug(menuItemsValues[index] + " - " + menuItemsKeys[index]);
-//		}
-//		logger.debug ("Finished init custom menu");
-		        View.initialize();
-		
+        View.initialize();
     }
 
     //! Load your resources here

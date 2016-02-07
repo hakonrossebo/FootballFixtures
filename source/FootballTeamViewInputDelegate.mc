@@ -21,8 +21,8 @@ class FootballTeamViewInputDelegate extends Ui.InputDelegate
     	var menuView = new CustomMenuView(Constants.leagueTeams);
     	//Ui.switchToView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
     	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
-
         }
+		return true;
     }
 
 }
