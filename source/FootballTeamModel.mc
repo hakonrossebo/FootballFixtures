@@ -15,7 +15,7 @@ class FootballTeamModel
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
   	hidden var userTeamId = 0;
-  	hidden var CONST_FIXTURE_DAYS = 21;
+  	hidden var CONST_FIXTURE_DAYS = 23;
   	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
@@ -44,7 +44,8 @@ class FootballTeamModel
 				//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
     	    	callbackHandler.invoke("Switching to select");
 		    	var menuView = new CustomMenuView(Constants.leagueTeams);
-		    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
+		    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
+    	    	callbackHandler.invoke("Switched to select");
 
 				teamFixturesInfo = null;
 				return;
