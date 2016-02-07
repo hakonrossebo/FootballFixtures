@@ -122,7 +122,7 @@ class FootballTeamView extends Ui.View {
         var fixtureOpponent = Constants.leagueTeams[fixture["htId"]];
         if (fixture["htId"] == mTeamId)
         {
-        	fixtureOpponent = fixture["atId"];
+        	fixtureOpponent = Constants.leagueTeams[fixture["atId"]];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
@@ -145,10 +145,10 @@ class FootballTeamView extends Ui.View {
         var fixtureResult = Lang.format(fixtureResultTemplate, [homeTeamResult, awayTeamResult]);
 
         var fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureAway);
-        var fixtureOpponent = fixture["htId"];
+        var fixtureOpponent = Constants.leagueTeams[fixture["htId"]];
         if (fixture["htId"] == mTeamId)
         {
-        	fixtureOpponent = fixture["atId"];
+        	fixtureOpponent = Constants.leagueTeams[fixture["atId"]];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);

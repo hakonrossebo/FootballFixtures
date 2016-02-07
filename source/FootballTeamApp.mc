@@ -14,14 +14,8 @@ class FootballTeamApp extends App.AppBase {
     }
 
     function onStart() {
-  		var config = new Log4MonkeyC.Config();
-  		if (Constants.current_environment >= Constants.env_Debug) {
-  			config.setLogLevel(Log.DEBUG);
-  		}
-  		else {
-  			config.setLogLevel(Log.WARN);
-  		}
-  		Log4MonkeyC.setLogConfig(config);
+  		Log.setLogConfig(Constants.getGlobalLoggerConfig());
+    
   		logger = Log.getLogger("FootballTeamApp");
   		
 		propertyHandler = new PropertyHandler();
