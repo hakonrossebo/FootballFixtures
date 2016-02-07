@@ -96,6 +96,7 @@ class FootballTeamView extends Ui.View {
     {
 		try
 		{
+			logger.debug("Inside setFixtureInfo");
 			var fixtures = teamFixturesInfo.getNextFixtures();
 	        mNextMatches[0] = getFixture(fixtures["fixtures"][0]);
 	        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
@@ -118,10 +119,10 @@ class FootballTeamView extends Ui.View {
     {
     	var fixtureTemplate = "$1$ $2$ $3$";
         var fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureAway);
-        var fixtureOpponent = fixture["homeTeamName"];
-        if (fixture["homeTeamId"] == mTeamId)
+        var fixtureOpponent = Constants.leagueTeams[fixture["htId"]];
+        if (fixture["htId"] == mTeamId)
         {
-        	fixtureOpponent = fixture["awayTeamName"];
+        	fixtureOpponent = fixture["atId"];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var fixtureDateMoment = DateTimeUtils.parseISO8601DateToMoment(fixture["date"]);
@@ -134,18 +135,20 @@ class FootballTeamView extends Ui.View {
 
     function getLastFixture(fixture)
     {
+		logger.error("Get last fixture info");
     	//fixtureTemplateTest = "2-0 (H) Chelsea";
     	var fixtureTemplate = "$1$ $2$ $3$";
         var fixtureResultTemplate = "$1$-$2$";
-        var homeTeamResult = fixture["result"]["goalsHomeTeam"];
-        var awayTeamResult = fixture["result"]["goalsAwayTeam"];
+        var homeTeamResult = fixture["res"]["ght"];
+        var awayTeamResult = fixture["res"]["gat"];
+		logger.error("results fetched");
         var fixtureResult = Lang.format(fixtureResultTemplate, [homeTeamResult, awayTeamResult]);
 
         var fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureAway);
-        var fixtureOpponent = fixture["homeTeamName"];
-        if (fixture["homeTeamId"] == mTeamId)
+        var fixtureOpponent = fixture["htId"];
+        if (fixture["htId"] == mTeamId)
         {
-        	fixtureOpponent = fixture["awayTeamName"];
+        	fixtureOpponent = fixture["atId"];
         	fixtureLocation = Ui.loadResource(Rez.Strings.MainFixtureHome);
         }
         var result = Lang.format(fixtureTemplate, [fixtureResult, fixtureLocation, fixtureOpponent ]);

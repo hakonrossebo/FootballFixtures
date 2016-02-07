@@ -15,7 +15,7 @@ class FootballTeamModel
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
   	hidden var userTeamId = 0;
-  	hidden var CONST_FIXTURE_DAYS = 14;
+  	hidden var CONST_FIXTURE_DAYS = 21;
   	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
@@ -61,6 +61,10 @@ class FootballTeamModel
 
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
+	    	logger.debug(teamNextFixturesUrl);
+	    	logger.debug(teamPreviousFixturesUrl);
+
+
 			if (Constants.current_environment == Constants.env_OfflineTesting)
 			{
 				logger.debug("Using localhost test json");
@@ -73,7 +77,7 @@ class FootballTeamModel
 			var options = {
 			    :method => Comm.HTTP_REQUEST_METHOD_GET,
 			    :headers => { "X-Auth-Token" => token,
-			    			  "X-Response-Control" => "minified" 	 }
+			    			  "X-Response-Control" => "compressed" 	 }
 			};
 
 			Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
