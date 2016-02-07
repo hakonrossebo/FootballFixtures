@@ -36,6 +36,17 @@ class InfoView extends Ui.View {
     function onShow() {
         logger.debug("Start on show");
         var mModel = new FootballTeamModel(propertyHandler, method(:onInfoUpdated),selectedItem);
+        var result = mModel.getFixtureData();
+        if (result == -1) {
+
+	    	onInfoUpdated("ret - switching");
+	    	var menuView = new CustomMenuView(Constants.leagueTeams);
+	        logger.debug("menuView: " + menuView);
+	    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
+//			var menuView = new SplashView();
+//			Ui.pushView(menuView, null, Ui.SLIDE_IMMEDIATE);
+	    	onInfoUpdated("menuView: " + menuView);
+        }
     }
 
 

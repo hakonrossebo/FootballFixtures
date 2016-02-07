@@ -8,6 +8,7 @@ using Log4MonkeyC as Log;
 class FootballTeamModel
 {
     hidden var callbackHandler;
+    hidden var selectedNewTeamId;
     hidden var logger;
     hidden var propertyHandler;
   	hidden var teamNextFixtures;
@@ -23,39 +24,28 @@ class FootballTeamModel
     function initialize(propertyHandler, callbackHandlerInfo, selectedNewTeamId)
     {
         self.propertyHandler = propertyHandler;
+        self.selectedNewTeamId = selectedNewTeamId;
         logger = Log.getLogger("FootballTeamModel");
         callbackHandler = callbackHandlerInfo;
+        
+    }
+
+	function getFixtureData() {
 		try
 		{
 			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
-			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
-			{
-				logger.debug("Switching view to FootballTeamView" );
-    	    	callbackHandler.invoke("Switching to main");
-				
-				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
-				teamFixturesInfo = null;
-				return;
-			}
+
 			if (!teamFixturesInfo.selectedTeamValid)
 			{
-				//User need to select a team
-				logger.debug("Switching view to Team Select" );
-				//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
-    	    	callbackHandler.invoke("Switching to select");
-		    	var menuView = new CustomMenuView(Constants.leagueTeams);
-		    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
-    	    	callbackHandler.invoke("Switched to select");
-
 				teamFixturesInfo = null;
-				return;
+				return -1;
 			}
 	    	logger.debug("TeamId is ok, but fixtures needs to be refreshed" );
 	    	callbackHandler.invoke("Refresh");	    	
           	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
     	    	callbackHandler.invoke("No phone connection");
-    	    	return;
+    	    	return -2;
     	    }
     	    userTeamId = teamFixturesInfo.getTeamId();
 	    	logger.debug("TeamId to refresh: " + userTeamId );
@@ -91,10 +81,11 @@ class FootballTeamModel
 		catch (ex)
 		{
 	        callbackHandler.invoke("Error");
-			logger.error("Error: " + ex.getErrorMessage());    
+			logger.error("Error: " + ex.getErrorMessage());
+			return -4;    
 		}
-    }
-
+		return 0;
+	}
 
     function onReceiveNextFixtures(responseCode, data)
     {

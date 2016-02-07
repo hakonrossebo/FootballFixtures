@@ -24,8 +24,8 @@ class CustomMenuViewInputDelegate extends Ui.InputDelegate
       
 			var infoView = new InfoView(propertyHandler, selectedItem);
 			//var mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),selectedItem);
-			Ui.popView(Ui.SLIDE_IMMEDIATE);
-			Ui.switchToView(infoView, null, Ui.SLIDE_RIGHT);
+			//Ui.popView(Ui.SLIDE_IMMEDIATE);
+			Ui.pushView(infoView, null, Ui.SLIDE_RIGHT);
 
         }
         if(key.getKey() == Ui.KEY_UP ) {

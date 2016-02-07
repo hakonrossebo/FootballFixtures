@@ -46,13 +46,24 @@ class FootballTeamApp extends App.AppBase {
 	       	return [ startView, startViewInputDelegate];
 			//return;
 		}
+		if (!teamFixturesInfo.selectedTeamValid)
+		{
+			//User need to select a team
+			logger.debug("Switching view to Team Select" );
+
+	    	startView = new CustomMenuView(Constants.leagueTeams);
+	    	startViewInputDelegate = new CustomMenuViewInputDelegate(startView, propertyHandler);
+			teamFixturesInfo = null;
+	       	return [ startView, startViewInputDelegate ];
+		}
+		
 		else
 		{
 			logger.debug("Creating infoView" );
 			startView = new InfoView(propertyHandler, 0);
 			startViewInputDelegate = null;
 	       	return [ startView ];
-			//mModel = new FootballTeamModel(propertyHandler, startView.method(:onInfoUpdated),0);
+		
 		}
 
 
