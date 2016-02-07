@@ -43,7 +43,7 @@ class CustomMenuView extends Ui.View {
         var topPosY = 2 * height  / 9;
         var bottomPosY = 7 * height  / 9;
             
-		logger.debug ("Start on update custommenu");
+		logger.debug ("Start on update custom menu");
 		
         dc.setColor( Gfx.COLOR_BLACK, Gfx.COLOR_BLACK );
         dc.clear();
@@ -87,6 +87,7 @@ class CustomMenuView extends Ui.View {
     }
     
 	function getMenuItemByOffset(offset) {
+		logger.debug ("GetMenuItemByOffset start");
 		logger.debug ("Offset: " + offset);
 		var virtualIndex = currentMenuItem + offset;
 		var realIndex = virtualIndex % menuItemsCount;

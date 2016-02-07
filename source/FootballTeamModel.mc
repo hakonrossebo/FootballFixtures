@@ -15,7 +15,7 @@ class FootballTeamModel
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
   	hidden var userTeamId = 0;
-  	hidden var CONST_FIXTURE_DAYS = 20;
+  	hidden var CONST_FIXTURE_DAYS = 14;
   	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
@@ -31,6 +31,8 @@ class FootballTeamModel
 			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
 			{
 				logger.debug("Switching view to FootballTeamView" );
+    	    	callbackHandler.invoke("Switching to main");
+				
 				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
 				teamFixturesInfo = null;
 				return;
@@ -38,16 +40,17 @@ class FootballTeamModel
 			if (!teamFixturesInfo.selectedTeamValid)
 			{
 				//User need to select a team
-				logger.debug("Switching view to PickerChooser" );
+				logger.debug("Switching view to Team Select" );
 				//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
-
+    	    	callbackHandler.invoke("Switching to select");
 		    	var menuView = new CustomMenuView(Constants.leagueTeams);
-		    	Ui.switchToView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
+		    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
 
 				teamFixturesInfo = null;
 				return;
 			}
 	    	logger.debug("TeamId is ok, but fixtures needs to be refreshed" );
+	    	callbackHandler.invoke("Refresh");	    	
           	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
     	    	callbackHandler.invoke("No phone connection");
