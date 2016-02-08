@@ -14,7 +14,7 @@ class InfoView extends Ui.View {
         logger.debug("Start InfoView init");
         self.selectedItem = selectedItem;
         self.propertyHandler = propertyHandler;
-        //View.initialize();
+        View.initialize();
         logger.debug("InfoView init ok");
     }
 
@@ -29,23 +29,39 @@ class InfoView extends Ui.View {
         Ui.requestUpdate();
 	}
 
+    function onSelectedTeam(selectedTeamId)
+    {
+        logger.debug("Inside selected team: " + selectedTeamId);
+        selectedItem = selectedTeamId;
+	}
 
     //! Called when this View is brought to the foreground. Restore
     //! the state of this View and prepare it to be shown. This includes
     //! loading resources into memory.
     function onShow() {
         logger.debug("Start on show");
+
+		if (selectedItem == -2) {
+			//User need to select a team
+			logger.debug("Switching view to Team Select" );
+
+	    	var menuView = new CustomMenuView(Constants.leagueTeams);
+	    	var menuViewInputDelegate = new CustomMenuViewInputDelegate(menuView, method(:onSelectedTeam), propertyHandler);
+			//teamFixturesInfo = null;
+			Ui.pushView(menuView, menuViewInputDelegate, Ui.SLIDE_RIGHT);
+			return;
+		}
+        
+		logger.debug("Starting model - get fixture data: " + selectedItem );
         var mModel = new FootballTeamModel(propertyHandler, method(:onInfoUpdated),selectedItem);
         var result = mModel.getFixtureData();
         if (result == -1) {
 
 	    	onInfoUpdated("ret - switching");
-	    	var menuView = new CustomMenuView(Constants.leagueTeams);
-	        logger.debug("menuView: " + menuView);
-	    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
-//			var menuView = new SplashView();
-//			Ui.pushView(menuView, null, Ui.SLIDE_IMMEDIATE);
-	    	onInfoUpdated("menuView: " + menuView);
+//	    	var menuView = new CustomMenuView(Constants.leagueTeams);
+//	        logger.debug("menuView: " + menuView);
+//	    	Ui.pushView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler), Ui.SLIDE_IMMEDIATE );
+//	    	onInfoUpdated("menuView: " + menuView);
         }
     }
 
@@ -64,6 +80,7 @@ class InfoView extends Ui.View {
     //! state of this View here. This includes freeing resources from
     //! memory.
     function onHide() {
+    	//propertyHandler = null;	
     }
 
 }

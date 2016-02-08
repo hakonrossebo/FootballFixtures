@@ -30,43 +30,13 @@ class FootballTeamApp extends App.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
     	logger.debug("main - Starting application - main");
-        //return [ infoView ];
-        //return [ startView, startViewInputDelegate];
 
 		logger.debug("fetching team info" );
 		var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(0);
+		startView = new FootballTeamView(propertyHandler, teamFixturesInfo);
+		startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler);
 		logger.debug("team info fetched" );
-		if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
-		{
-			logger.debug("Ok at init. Switching view to FootballTeamView" );
-			startView = new FootballTeamView(teamFixturesInfo);
-			startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler);
-			//Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
- 			teamFixturesInfo = null;
-	       	return [ startView, startViewInputDelegate];
-			//return;
-		}
-		if (!teamFixturesInfo.selectedTeamValid)
-		{
-			//User need to select a team
-			logger.debug("Switching view to Team Select" );
-
-	    	startView = new CustomMenuView(Constants.leagueTeams);
-	    	startViewInputDelegate = new CustomMenuViewInputDelegate(startView, propertyHandler);
-			teamFixturesInfo = null;
-	       	return [ startView, startViewInputDelegate ];
-		}
-		
-		else
-		{
-			logger.debug("Creating infoView" );
-			startView = new InfoView(propertyHandler, 0);
-			startViewInputDelegate = null;
-	       	return [ startView ];
-		
-		}
-
-
+       	return [ startView, startViewInputDelegate];
+       	
     }
-
 }

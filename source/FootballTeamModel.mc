@@ -33,6 +33,8 @@ class FootballTeamModel
 	function getFixtureData() {
 		try
 		{
+	    	logger.debug("propertyHandler:  " + propertyHandler );
+	    	logger.debug("selectedNewTeamId" + selectedNewTeamId );
 			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
 
 			if (!teamFixturesInfo.selectedTeamValid)
@@ -133,7 +135,7 @@ class FootballTeamModel
     		teamNextFixtures = null;
     		teamPreviousFixtures = null;
             callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
-			Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
+			Ui.switchToView(new FootballTeamView(propertyHandler, teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
 			teamFixturesInfo = null;
     	}
     	else

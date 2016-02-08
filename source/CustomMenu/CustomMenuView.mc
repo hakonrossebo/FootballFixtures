@@ -28,6 +28,12 @@ class CustomMenuView extends Ui.View {
 
     function onShow() {
     }
+    
+    function onHide() {
+	    menuItemsValues = null;
+	    menuItemsKeys = null;
+    
+    }
 
     function onUpdate(dc) {
 		width = dc.getWidth();

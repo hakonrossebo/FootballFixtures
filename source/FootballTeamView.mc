@@ -16,12 +16,15 @@ class FootballTeamView extends Ui.View {
     hidden var mPreviousMatch = "--";
     hidden var mNextMatches =  ["--", "--", "--" ];
     hidden var mNextMatchDuration = "--";
-    hidden var mModel;
     hidden var logger;
-
-    function initialize(teamFixturesInfo){
+    hidden var teamFixturesInfo;
+	hidden var propertyHandler;
+	
+    function initialize(propertyHandler, teamFixturesInfo){
+    
     	logger = Log.getLogger("FootballTeamView");
-    	prepareViewInfo(teamFixturesInfo);
+        self.propertyHandler = propertyHandler;
+    	self.teamFixturesInfo = teamFixturesInfo;
     }
 
     //! Load your resources here
@@ -32,6 +35,27 @@ class FootballTeamView extends Ui.View {
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {
     	logger.debug("showing main view");
+		if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
+		{
+	    	prepareViewInfo();
+		}
+
+		else if (!teamFixturesInfo.selectedTeamValid)
+		{
+			logger.debug("Need to select team - Creating infoView" );
+			var infoView = new InfoView(propertyHandler, -2);
+			Ui.pushView(infoView, null, Ui.SLIDE_RIGHT);
+		}
+		
+		else
+		{
+			logger.debug("Need to refresh - Creating infoView" );
+			var infoView = new InfoView(propertyHandler, 0);
+			Ui.pushView(infoView, null, Ui.SLIDE_RIGHT);
+		}
+		
+		
+		
     }
 
     //! Update the view
@@ -58,9 +82,11 @@ class FootballTeamView extends Ui.View {
     //! Called when this View is removed from the screen. Save the
     //! state of your app here.
     function onHide() {
+    	teamFixturesInfo = null;
+    	propertyHandler = null;	
     }
 
-    function prepareViewInfo(teamFixturesInfo)
+    function prepareViewInfo()
     {
         logger.debug("Inside prepareViewInfo");
 		try
@@ -68,6 +94,8 @@ class FootballTeamView extends Ui.View {
 	        if (1==1)
 	        {
 	        	logger.debug("Inside infoready - instance ok");
+				logger.debug("Used memory:");
+				logger.debug(Sys.getSystemStats().usedMemory);
 	        	var durationTest = teamFixturesInfo.getNextFixtureDuration();
 	            mFootballTeamInfo = Constants.leagueTeams[teamFixturesInfo.getTeamId()];
 	            logger.debug("team: " + mFootballTeamInfo);
@@ -102,6 +130,7 @@ class FootballTeamView extends Ui.View {
 	        mNextMatches[1] = getFixture(fixtures["fixtures"][1]);
 	        mNextMatchDuration = DateTimeUtils.formatDurationToDDHHMM(teamFixturesInfo.getNextFixtureDuration());
 		}
+		
 		catch (ex)
 		{
 			mFootballTeamInfo = "Error";

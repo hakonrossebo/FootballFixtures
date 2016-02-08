@@ -6,9 +6,11 @@ class CustomMenuViewInputDelegate extends Ui.InputDelegate
 	hidden var propertyHandler;
     hidden var logger;
     hidden var mView;
+    hidden var onSelectedTeamHandler;
 
-    function initialize(mView, propertyHandler){
+    function initialize(mView, onSelectedTeamHandler,  propertyHandler){
 		self.propertyHandler = propertyHandler;
+		self.onSelectedTeamHandler = onSelectedTeamHandler;
 		self.mView = mView;
       	logger = Log.getLogger("CustomMenuViewInputDelegate");
     }
@@ -21,11 +23,10 @@ class CustomMenuViewInputDelegate extends Ui.InputDelegate
 
 			var selectedItem = mView.getCurrentSelection();
       		logger.debug("selectedItem :" + selectedItem );
-      
-			var infoView = new InfoView(propertyHandler, selectedItem);
-			//var mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),selectedItem);
+      		onSelectedTeamHandler.invoke(selectedItem);	
+//			var infoView = new InfoView(propertyHandler, selectedItem);
 			Ui.popView(Ui.SLIDE_IMMEDIATE);
-			Ui.switchToView(infoView, null, Ui.SLIDE_RIGHT);
+//			Ui.pushView(infoView, null, Ui.SLIDE_RIGHT);
 
         }
         if(key.getKey() == Ui.KEY_UP ) {
