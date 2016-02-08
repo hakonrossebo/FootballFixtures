@@ -13,7 +13,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
     function onMenuItem(item) {
         if ( item == :item_select_team ) {
         	logger.debug("m1");
-        	Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
+        	//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
             // Do something here
 
         }

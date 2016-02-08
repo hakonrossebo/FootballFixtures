@@ -11,6 +11,7 @@ class FootballTeamModel
     hidden var selectedNewTeamId;
     hidden var logger;
     hidden var propertyHandler;
+    hidden var onFixturesModelUpdatedHandler;
   	hidden var teamNextFixtures;
   	hidden var teamNextFixturesReceived = false;
   	hidden var teamPreviousFixtures;
@@ -21,10 +22,11 @@ class FootballTeamModel
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
 
-    function initialize(propertyHandler, callbackHandlerInfo, selectedNewTeamId)
+    function initialize(propertyHandler, callbackHandlerInfo, onFixturesModelUpdatedHandler, selectedNewTeamId)
     {
         self.propertyHandler = propertyHandler;
         self.selectedNewTeamId = selectedNewTeamId;
+        self.onFixturesModelUpdatedHandler = onFixturesModelUpdatedHandler;
         logger = Log.getLogger("FootballTeamModel");
         callbackHandler = callbackHandlerInfo;
         
@@ -135,8 +137,9 @@ class FootballTeamModel
     		teamNextFixtures = null;
     		teamPreviousFixtures = null;
             callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
-			Ui.switchToView(new FootballTeamView(propertyHandler, teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
-			teamFixturesInfo = null;
+            onFixturesModelUpdatedHandler.invoke(teamFixturesInfo);
+			//Ui.popView(Ui.SLIDE_IMMEDIATE);
+			//teamFixturesInfo = null;
     	}
     	else
     	{

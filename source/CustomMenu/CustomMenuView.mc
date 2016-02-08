@@ -39,9 +39,9 @@ class CustomMenuView extends Ui.View {
 		width = dc.getWidth();
         height = dc.getHeight();
         var centerY = height / 2;
-        var centerX = width / 2;
-        var topPosY = 2 * height  / 9;
-        var bottomPosY = 7 * height  / 9;
+        var centerX = width / 2 - 6;
+        var topPosY = 2 * height  / 9 - 6;
+        var bottomPosY = 7 * height  / 9 - 6;
             
 		logger.debug ("Start on update custom menu");
 		

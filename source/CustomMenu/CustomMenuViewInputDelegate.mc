@@ -24,10 +24,7 @@ class CustomMenuViewInputDelegate extends Ui.InputDelegate
 			var selectedItem = mView.getCurrentSelection();
       		logger.debug("selectedItem :" + selectedItem );
       		onSelectedTeamHandler.invoke(selectedItem);	
-//			var infoView = new InfoView(propertyHandler, selectedItem);
 			Ui.popView(Ui.SLIDE_IMMEDIATE);
-//			Ui.pushView(infoView, null, Ui.SLIDE_RIGHT);
-
         }
         if(key.getKey() == Ui.KEY_UP ) {
         	logger.debug("Pressed up");

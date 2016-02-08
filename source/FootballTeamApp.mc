@@ -33,8 +33,9 @@ class FootballTeamApp extends App.AppBase {
 
 		logger.debug("fetching team info" );
 		var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(0);
-		startView = new FootballTeamView(propertyHandler, teamFixturesInfo);
-		startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler);
+		startView = new FootballTeamView(propertyHandler);
+		startView.prepareMainData(teamFixturesInfo);
+		startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler, startView.method(:onSelectedTeam));
 		logger.debug("team info fetched" );
        	return [ startView, startViewInputDelegate];
        	

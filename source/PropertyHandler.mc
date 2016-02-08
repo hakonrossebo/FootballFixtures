@@ -3,7 +3,7 @@ using Toybox.Application as App;
 
 class PropertyHandler {
 	hidden const OLD_SETTINGS_IDENTITY = "TeamFixtureInfoJson";
-	hidden const CURRENT_SETTINGS_IDENTITY = "TeamFixtureInfoJson_v20";
+	hidden const CURRENT_SETTINGS_IDENTITY = "TeamFixtureInfoJson_v23";
 	hidden var logger;
 
 	// Constructor
