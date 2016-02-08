@@ -4,7 +4,8 @@ using Log4MonkeyC as Log;
 
 class FootballTeamApp extends App.AppBase {
 
-	hidden var infoView;
+	hidden var startView;
+	hidden var startViewInputDelegate;
     hidden var mModel;
     hidden var logger;
     hidden var propertyHandler;
@@ -13,20 +14,12 @@ class FootballTeamApp extends App.AppBase {
     }
 
     function onStart() {
-  		var config = new Log4MonkeyC.Config();
-  		if (Constants.current_environment >= Constants.env_Debug) {
-  			config.setLogLevel(Log.DEBUG);
-  		}
-  		else {
-  			config.setLogLevel(Log.WARN);
-  		}
-  		Log4MonkeyC.setLogConfig(config);
+  		Log.setLogConfig(Constants.getGlobalLoggerConfig());
+    
   		logger = Log.getLogger("FootballTeamApp");
   		
 		propertyHandler = new PropertyHandler();
-		
-		infoView = new InfoView();
-		mModel = new FootballTeamModel(propertyHandler, infoView.method(:onInfoUpdated),0);
+
 
     }
 
@@ -36,8 +29,15 @@ class FootballTeamApp extends App.AppBase {
 
     //! Return the initial view of your application here
     function getInitialView() {
-    	logger.debug("Starting application");
-        return [ infoView];
-    }
+    	logger.debug("main - Starting application - main");
 
+		logger.debug("fetching team info" );
+		var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(0);
+		startView = new FootballTeamView(propertyHandler);
+		startView.prepareMainData(teamFixturesInfo);
+		startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler, startView.method(:onSelectedTeam));
+		logger.debug("team info fetched" );
+       	return [ startView, startViewInputDelegate];
+       	
+    }
 }

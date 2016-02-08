@@ -19,13 +19,7 @@ class CustomMenuView extends Ui.View {
     	menuItemsKeys = menuItems.keys();
     	menuItemsValues = menuItems.values();
     	menuItemsCount = menuItems.size();
-	
-		for (var index = 0;index < menuItemsValues.size() ;index ++)
-		{
-			logger.debug(menuItemsValues[index] + " - " + menuItemsKeys[index]);
-		}
-		logger.debug ("Finished init custom menu");
-		
+        View.initialize();
     }
 
     //! Load your resources here
@@ -34,16 +28,22 @@ class CustomMenuView extends Ui.View {
 
     function onShow() {
     }
+    
+    function onHide() {
+	    menuItemsValues = null;
+	    menuItemsKeys = null;
+    
+    }
 
     function onUpdate(dc) {
 		width = dc.getWidth();
         height = dc.getHeight();
         var centerY = height / 2;
-        var centerX = width / 2;
-        var topPosY = 2 * height  / 9;
-        var bottomPosY = 7 * height  / 9;
+        var centerX = width / 2 - 6;
+        var topPosY = 2 * height  / 9 - 6;
+        var bottomPosY = 7 * height  / 9 - 6;
             
-		logger.debug ("Start on update custommenu");
+		logger.debug ("Start on update custom menu");
 		
         dc.setColor( Gfx.COLOR_BLACK, Gfx.COLOR_BLACK );
         dc.clear();
@@ -87,6 +87,7 @@ class CustomMenuView extends Ui.View {
     }
     
 	function getMenuItemByOffset(offset) {
+		logger.debug ("GetMenuItemByOffset start");
 		logger.debug ("Offset: " + offset);
 		var virtualIndex = currentMenuItem + offset;
 		var realIndex = virtualIndex % menuItemsCount;

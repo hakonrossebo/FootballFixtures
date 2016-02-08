@@ -8,56 +8,58 @@ using Log4MonkeyC as Log;
 class FootballTeamModel
 {
     hidden var callbackHandler;
+    hidden var selectedNewTeamId;
     hidden var logger;
     hidden var propertyHandler;
+    hidden var onFixturesModelUpdatedHandler;
   	hidden var teamNextFixtures;
   	hidden var teamNextFixturesReceived = false;
   	hidden var teamPreviousFixtures;
   	hidden var teamPreviousFixturesReceived = false;
   	hidden var userTeamId = 0;
-  	hidden var CONST_FIXTURE_DAYS = 20;
+  	hidden var CONST_FIXTURE_DAYS = 23;
   	hidden var CONST_PREVIOUS_FIXTURE_DAYS = 14;
   	hidden var teamNextFixturesUrl = "";
   	hidden var teamPreviousFixturesUrl = "";
 
-    function initialize(propertyHandler, callbackHandlerInfo, selectedNewTeamId)
+    function initialize(propertyHandler, callbackHandlerInfo, onFixturesModelUpdatedHandler, selectedNewTeamId)
     {
         self.propertyHandler = propertyHandler;
+        self.selectedNewTeamId = selectedNewTeamId;
+        self.onFixturesModelUpdatedHandler = onFixturesModelUpdatedHandler;
         logger = Log.getLogger("FootballTeamModel");
         callbackHandler = callbackHandlerInfo;
+        
+    }
+
+	function getFixtureData() {
 		try
 		{
+	    	logger.debug("propertyHandler:  " + propertyHandler );
+	    	logger.debug("selectedNewTeamId" + selectedNewTeamId );
 			var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(selectedNewTeamId);
-			if (teamFixturesInfo.dateValid && teamFixturesInfo.selectedTeamValid)
-			{
-				logger.debug("Switching view to FootballTeamView" );
-				Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
-				teamFixturesInfo = null;
-				return;
-			}
+
 			if (!teamFixturesInfo.selectedTeamValid)
 			{
-				//User need to select a team
-				logger.debug("Switching view to PickerChooser" );
-				//Ui.pushView( new PickerChooser(), new PickerChooserDelegate(propertyHandler), Ui.SLIDE_IMMEDIATE );
-
-		    	var menuView = new CustomMenuView(Constants.leagueTeams);
-		    	Ui.switchToView( menuView, new CustomMenuViewInputDelegate(menuView, propertyHandler, menuView.method(:scrollMenuUp), menuView.method(:scrollMenuDown),  menuView.method(:getCurrentSelection)), Ui.SLIDE_IMMEDIATE );
-
 				teamFixturesInfo = null;
-				return;
+				return -1;
 			}
 	    	logger.debug("TeamId is ok, but fixtures needs to be refreshed" );
+	    	callbackHandler.invoke("Refresh");	    	
           	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
-    	    	callbackHandler.invoke("No phone connection");
-    	    	return;
+    	    	callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainNoPhoneConnection));
+    	    	return -2;
     	    }
     	    userTeamId = teamFixturesInfo.getTeamId();
 	    	logger.debug("TeamId to refresh: " + userTeamId );
 
 			teamNextFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=n$2$", [userTeamId, CONST_FIXTURE_DAYS]);
 			teamPreviousFixturesUrl = Lang.format("http://api.football-data.org/v1/teams/$1$/fixtures?timeFrame=p$2$", [userTeamId, CONST_PREVIOUS_FIXTURE_DAYS]);
+	    	logger.debug(teamNextFixturesUrl);
+	    	logger.debug(teamPreviousFixturesUrl);
+
+
 			if (Constants.current_environment == Constants.env_OfflineTesting)
 			{
 				logger.debug("Using localhost test json");
@@ -70,7 +72,7 @@ class FootballTeamModel
 			var options = {
 			    :method => Comm.HTTP_REQUEST_METHOD_GET,
 			    :headers => { "X-Auth-Token" => token,
-			    			  "X-Response-Control" => "minified" 	 }
+			    			  "X-Response-Control" => "compressed" 	 }
 			};
 
 			Comm.makeJsonRequest(teamNextFixturesUrl, {}, options, method(:onReceiveNextFixtures));
@@ -82,11 +84,12 @@ class FootballTeamModel
 		}
 		catch (ex)
 		{
-	        callbackHandler.invoke("Error");
-			logger.error("Error: " + ex.getErrorMessage());    
+	        callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainError));
+			logger.error("Error: " + ex.getErrorMessage());
+			return -4;    
 		}
-    }
-
+		return 0;
+	}
 
     function onReceiveNextFixtures(responseCode, data)
     {
@@ -134,8 +137,7 @@ class FootballTeamModel
     		teamNextFixtures = null;
     		teamPreviousFixtures = null;
             callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
-			Ui.switchToView(new FootballTeamView(teamFixturesInfo), new FootballTeamViewInputDelegate(propertyHandler), Ui.SLIDE_RIGHT);
-			teamFixturesInfo = null;
+            onFixturesModelUpdatedHandler.invoke(teamFixturesInfo);
     	}
     	else
     	{

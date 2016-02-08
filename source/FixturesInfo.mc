@@ -26,6 +26,7 @@ class FixturesInfo {
 		properties["lastModified"] = Time.now().value();	
 	}
 	function setTeamId(teamId) {
+		logger.debug("Setting team id " + teamId);
 		properties["teamId"] = teamId;	
 	}
 	function setNextFixtures(nextFixtures) {
@@ -36,6 +37,7 @@ class FixturesInfo {
 	}
 	
 	function getTeamId() {
+		logger.debug("Get team id");
 		return properties["teamId"];
 	}
 	function getNextFixtures() {
@@ -73,8 +75,8 @@ class FixturesInfo {
 		try {
 			var next = getNextFixtureDuration();
 			var lastUpdatedDuration = getLastUpdatedDuration();
-			var homeTeam = properties["nextFixtures"]["fixtures"][0]["homeTeamName"];
-			var season = properties["nextFixtures"]["fixtures"][0]["soccerseasonId"];
+			var homeTeam = properties["nextFixtures"]["fixtures"][0]["htId"];
+			var season = properties["nextFixtures"]["fixtures"][0]["ssId"];
 		}
 		catch (ex)
 		{

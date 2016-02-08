@@ -19,7 +19,15 @@ module Log4MonkeyC {
 	//!
 	//! @param [String] loggerName Name of the logger
 	function getLogger(loggerName) {
-		return new Logger(loggerName, config);
+		Sys.println("GetLogger: " + loggerName );
+		try
+		{
+			return new Logger(loggerName, Constants.getGlobalLoggerConfig());
+		}
+		catch(ex)
+		{
+			Sys.println("Log error " + ex.getErrorMessage() );
+		}
 	}
 
 	//! @return [Config] Log configuration for the module

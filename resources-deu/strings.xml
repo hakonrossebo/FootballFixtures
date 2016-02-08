@@ -13,4 +13,8 @@
 	<string id="MainMatchIn">in </string>
 	<string id="MainMenuSelectTeam">Mannschaftsauswahl</string>
 	<string id="MainMenuDetails">Details</string>
+    <string id="MainPressMenu">Drücken Sie Menü \nauszuwählen Mannschaft</string>
+    <string id="MainError">Error</string>
+    <string id="MainNoPhoneConnection">"Kein Telefonanschluss"</string>
+    <string id="MainTeamSelected">"Mannschafts ausgewählt"</string>
 </strings>
