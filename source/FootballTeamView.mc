@@ -52,8 +52,7 @@ class FootballTeamView extends Ui.View {
 	    	var menuView = new CustomMenuView(Constants.leagueTeams);
 	    	var menuViewInputDelegate = new CustomMenuViewInputDelegate(menuView, method(:onSelectedTeam), propertyHandler);
 			//teamFixturesInfo = null;
-			onInfoUpdated("Press menu to select team");
-			//Ui.pushView(menuView, menuViewInputDelegate, Ui.SLIDE_RIGHT);
+			onInfoUpdated(Ui.loadResource(Rez.Strings.MainPressMenu)); 
 		}
 		
 		else
@@ -82,7 +81,7 @@ class FootballTeamView extends Ui.View {
     function onSelectedTeam(selectedItem)
     {
     	showInfoText = true;
-    	onInfoUpdated("Team selected");
+    	onInfoUpdated(Ui.loadResource(Rez.Strings.MainTeamSelected));
     	loadDataFromWeb(selectedItem);
 	}
 
@@ -160,14 +159,15 @@ class FootballTeamView extends Ui.View {
 	        }
 	        else 
 	        {
-	            mFootballTeamInfo = "View error";
+		    	onInfoUpdated(Ui.loadResource(Rez.Strings.MainError));
 				logger.debug("View error. No dictionary with info from model.");
 	        }
 	        //teamFixturesInfo = null;
 		}
 		catch (ex)
 		{
-			mFootballTeamInfo = "Error";
+			showInfoText = true;
+	    	onInfoUpdated(ex.getErrorMessage());
 			logger.error("Error: " + ex.getErrorMessage());
 		}
 		logger.debug("Requesting UI update");
@@ -186,7 +186,8 @@ class FootballTeamView extends Ui.View {
 		
 		catch (ex)
 		{
-			mFootballTeamInfo = "Error";
+			showInfoText = true;
+	    	onInfoUpdated(ex.getErrorMessage());
 			logger.error("Error in setFixtureInfo");
 		}
 

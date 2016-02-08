@@ -48,7 +48,7 @@ class FootballTeamModel
 	    	callbackHandler.invoke("Refresh");	    	
           	var deviceSettings = Sys.getDeviceSettings();
     	    if(deviceSettings.phoneConnected == false) {
-    	    	callbackHandler.invoke("No phone connection");
+    	    	callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainNoPhoneConnection));
     	    	return -2;
     	    }
     	    userTeamId = teamFixturesInfo.getTeamId();
@@ -84,7 +84,7 @@ class FootballTeamModel
 		}
 		catch (ex)
 		{
-	        callbackHandler.invoke("Error");
+	        callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainError));
 			logger.error("Error: " + ex.getErrorMessage());
 			return -4;    
 		}
@@ -138,8 +138,6 @@ class FootballTeamModel
     		teamPreviousFixtures = null;
             callbackHandler.invoke(Ui.loadResource(Rez.Strings.MainFinished));
             onFixturesModelUpdatedHandler.invoke(teamFixturesInfo);
-			//Ui.popView(Ui.SLIDE_IMMEDIATE);
-			//teamFixturesInfo = null;
     	}
     	else
     	{
