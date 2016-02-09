@@ -13,4 +13,8 @@
     <string id="MainMatchIn">om </string>
     <string id="MainMenuSelectTeam">Velg lag</string>
     <string id="MainMenuDetails">Detaljer</string>
+    <string id="MainPressMenu">Trykk meny \nfor å velge lag</string>
+    <string id="MainError">Feil</string>
+    <string id="MainNoPhoneConnection">"Koble til telefon"</string>
+    <string id="MainTeamSelected">"Team valgt"</string>
 </strings>

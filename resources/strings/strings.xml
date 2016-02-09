@@ -13,4 +13,8 @@
     <string id="MainMatchIn">in </string>
     <string id="MainMenuSelectTeam">Select team</string>
     <string id="MainMenuDetails">Details</string>
+    <string id="MainPressMenu">Press menu to \nselect team</string>
+    <string id="MainError">Error</string>
+    <string id="MainNoPhoneConnection">"No phone connection"</string>
+    <string id="MainTeamSelected">"Team selected"</string>
 </strings>

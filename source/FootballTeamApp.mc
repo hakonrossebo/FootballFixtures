@@ -1,33 +1,26 @@
 using Toybox.Application as App;
 using Toybox.System as Sys;
-
-
-var mainView;
-
-var globalTeams = { 57 => "Arsenal",58 => "Aston Villa",1044 => "Bournemouth",61 => "Chelsea",354 => "Crystal",62 => "Everton",338 => "Foxes",64 => "Liverpool",65 => "ManCity",66 => "ManU",67 => "Newcastle",68 => "Norwich",340 => "Southampton",73 => "Spurs",70 => "Stoke",71 => "Sunderland",72 => "Swans",346 => "Watford",74 => "West Bromwich",563 => "West Ham" };
+using Log4MonkeyC as Log;
 
 class FootballTeamApp extends App.AppBase {
 
-
+	hidden var startView;
+	hidden var startViewInputDelegate;
     hidden var mModel;
-    
-
+    hidden var logger;
+    hidden var propertyHandler;
     function initialize() {
         AppBase.initialize();
     }
 
-    //! onStart() is called on application start up
     function onStart() {
-	    var dev = Sys.getDeviceSettings();
-	    if(dev.phoneConnected == false) {
-	        mView = new WaitingConnectionView();
-	        //Ui.switchToView(view, null, Ui.SLIDE_RIGHT);
-	    }
-	    else
-	    {
-	        mainView = new FootballTeamView();
-	        mModel = new FootballTeamModel(mainView.method(:onInfoReady),0);
-	    }
+  		Log.setLogConfig(Constants.getGlobalLoggerConfig());
+    
+  		logger = Log.getLogger("FootballTeamApp");
+  		
+		propertyHandler = new PropertyHandler();
+
+
     }
 
     //! onStop() is called when your application is exiting
@@ -36,7 +29,15 @@ class FootballTeamApp extends App.AppBase {
 
     //! Return the initial view of your application here
     function getInitialView() {
-        return [ mainView, new FootballTeamViewInputDelegate() ];
-    }
+    	logger.debug("main - Starting application - main");
 
+		logger.debug("fetching team info" );
+		var teamFixturesInfo = propertyHandler.getTeamFixturesInfo(0);
+		startView = new FootballTeamView(propertyHandler);
+		startView.prepareMainData(teamFixturesInfo);
+		startViewInputDelegate = new FootballTeamViewInputDelegate(propertyHandler, startView.method(:onSelectedTeam));
+		logger.debug("team info fetched" );
+       	return [ startView, startViewInputDelegate];
+       	
+    }
 }
