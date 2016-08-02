@@ -195,8 +195,12 @@ class FootballTeamView extends Ui.View {
     function setLastFixtureInfo(teamFixturesInfo)
     {
 		var fixtures = teamFixturesInfo.getPreviousFixtures();
-	    var last = fixtures["count"] - 1;
-        mPreviousMatch = getLastFixture(fixtures["fixtures"][last]);
+		var count = fixtures["count"];
+		if (count > 0)
+		{
+		    var lastIndex = fixtures["count"] - 1;
+	        mPreviousMatch = getLastFixture(fixtures["fixtures"][lastIndex]);
+		}
     }
     function getFixture(fixture)
     {
